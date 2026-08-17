@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>TOEFL iBT 2026 - Academic Discussion</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-fixed": "#aff1c9",
+                      "outline-variant": "#bfc9c0",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-fixed-variant": "#0b5134",
+                      "on-primary-fixed": "#002112",
+                      "surface-tint": "#2a6a4a",
+                      "surface-container": "#f0eded",
+                      "on-tertiary": "#ffffff",
+                      "inverse-primary": "#94d5ae",
+                      "primary-container": "#2f6e4e",
+                      "on-surface-variant": "#404942",
+                      "tertiary": "#733e00",
+                      "surface-dim": "#dcd9d9",
+                      "surface-container-high": "#eae7e7",
+                      "surface-variant": "#e4e2e1",
+                      "on-surface": "#1b1c1c",
+                      "surface-container-low": "#f6f3f2",
+                      "secondary-fixed": "#e4e3db",
+                      "on-primary": "#ffffff",
+                      "tertiary-fixed": "#ffdcc1",
+                      "surface-container-highest": "#e4e2e1",
+                      "inverse-on-surface": "#f3f0f0",
+                      "outline": "#707972",
+                      "on-tertiary-container": "#ffd9bb",
+                      "background": "#fcf9f8",
+                      "on-secondary-container": "#65655f",
+                      "on-tertiary-fixed-variant": "#6c3a00",
+                      "primary-fixed-dim": "#94d5ae",
+                      "on-background": "#1b1c1c",
+                      "on-primary-container": "#aceec5",
+                      "on-secondary": "#ffffff",
+                      "secondary-fixed-dim": "#c8c7bf",
+                      "surface": "#fcf9f8",
+                      "surface-bright": "#fcf9f8",
+                      "on-error": "#ffffff",
+                      "on-tertiary-fixed": "#2e1500",
+                      "on-secondary-fixed-variant": "#474741",
+                      "inverse-surface": "#303030",
+                      "secondary": "#5f5f59",
+                      "error": "#ba1a1a",
+                      "tertiary-container": "#955200",
+                      "on-error-container": "#93000a",
+                      "tertiary-fixed-dim": "#ffb779",
+                      "primary": "#125537",
+                      "secondary-container": "#e4e3db",
+                      "on-secondary-fixed": "#1b1c17",
+                      "error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "container-max": "1120px",
+                      "gutter": "24px",
+                      "unit": "8px",
+                      "margin-mobile": "16px",
+                      "margin-desktop": "40px"
+              },
+              "fontFamily": {
+                      "headline-md": ["Playfair Display"],
+                      "label-sm": ["Inter"],
+                      "label-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-lg-mobile": ["Playfair Display"],
+                      "display-lg": ["Playfair Display"],
+                      "body-lg": ["Inter"],
+                      "headline-lg": ["Playfair Display"]
+              },
+              "fontSize": {
+                      "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "label-sm": ["12px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                      "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.3", "fontWeight": "700"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .notebook-border {
+            border: 1px solid #E5E2D0;
+        }
+        .soft-shadow {
+            box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.03);
+        }
+        /* Custom scrollbar for text area to match aesthetic */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: theme('colors.surface-container-lowest'); 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: theme('colors.outline-variant'); 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: theme('colors.outline'); 
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="bg-surface dark:bg-surface-container docked full-width top-0 border-b border-outline-variant dark:border-outline flat no shadows sticky z-50">
+<div class="flex justify-between items-center w-full px-margin-desktop max-w-container-max mx-auto h-20">
+<div class="text-headline-md font-headline-md font-bold text-primary dark:text-on-primary-container flex items-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">menu_book</span>
+                TOEFL Prep 2026
+            </div>
+<div class="hidden md:flex gap-6 items-center">
+<a class="text-on-surface-variant dark:text-outline-variant font-medium pb-2 hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors text-label-md font-label-md" href="#">Reading</a>
+<a class="text-on-surface-variant dark:text-outline-variant font-medium pb-2 hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors text-label-md font-label-md" href="#">Listening</a>
+<a class="text-on-surface-variant dark:text-outline-variant font-medium pb-2 hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors text-label-md font-label-md" href="#">Speaking</a>
+<a class="text-primary dark:text-on-primary-container font-bold border-b-2 border-primary dark:border-on-primary-container pb-2 hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors text-label-md font-label-md opacity-80 transition-opacity duration-150" href="#">Writing</a>
+<a class="text-on-surface-variant dark:text-outline-variant font-medium pb-2 hover:text-primary dark:hover:text-primary-fixed hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors text-label-md font-label-md" href="#">Practice</a>
+</div>
+<div class="flex gap-4 items-center text-primary dark:text-on-primary-container">
+<button class="hover:text-primary dark:hover:text-primary-fixed transition-colors flex items-center justify-center p-2 rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined">timer</span>
+</button>
+<button class="hover:text-primary dark:hover:text-primary-fixed transition-colors flex items-center justify-center p-2 rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-grow w-full px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto py-8 lg:py-12 flex flex-col gap-8">
+<!-- Header & Timer Row -->
+<header class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b notebook-border pb-4">
+<div>
+<p class="text-label-sm font-label-sm text-secondary uppercase tracking-wider mb-2">Task 2</p>
+<h1 class="text-headline-lg-mobile md:text-headline-lg font-headline-lg-mobile md:font-headline-lg text-on-background">Academic Discussion</h1>
+</div>
+<!-- Timer Badge -->
+<div class="flex items-center gap-2 bg-surface-container-lowest notebook-border rounded-full px-4 py-2 soft-shadow" id="timer-badge">
+<span class="material-symbols-outlined text-primary">schedule</span>
+<span class="text-headline-md font-headline-md text-on-surface" id="time-display">09:59</span>
+</div>
+</header>
+<!-- Two Column Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- Left Column: Discussion Thread -->
+<section class="lg:col-span-7 flex flex-col gap-6">
+<!-- Instructions -->
+<div class="bg-surface-container-lowest notebook-border p-6 rounded-lg soft-shadow">
+<h2 class="text-headline-md font-headline-md mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">info</span>
+                        Instructions
+                    </h2>
+<p class="text-body-md font-body-md text-on-surface-variant">
+                        Your professor is teaching a class on economics. Write a post responding to the professor's question. 
+                        In your response, you should express and support your personal opinion, and make a contribution to the discussion in your own words.
+                    </p>
+</div>
+<!-- Professor Post -->
+<article class="bg-surface-container-lowest notebook-border rounded-lg soft-shadow overflow-hidden">
+<div class="bg-surface-container-low px-6 py-4 border-b notebook-border flex items-center gap-4">
+<img class="w-12 h-12 rounded-full object-cover border border-outline-variant" data-alt="A professional headshot of a middle-aged academic professor wearing a tweed blazer, standing in front of a subtly blurred university library. Warm, scholarly lighting. Clean, editorial photography style. High resolution." src="https://lh3.googleusercontent.com/aida-public/AB6AXuASBdDm1ajBfDb_Iz0y4gsCo2ldsmZQov94xki8Ncjztqrm2KUben7_qg59hf2HvKXxTg-elhY_IUPAEB_H4ZE-8PKbqZ5nACQGHA8ItnUWT9sPd-OUX_Y2D5UCOQVaVKnALUJRtHx9TSeW-QjWWYeFPCt-kEO79WbCC8fXPY4BO-AAWsqtbfeFfMXMYNRcfw_NCUFyr1bgs5PKNCb1oLFH3UdaUr6_5m_e_FtJ9gYtNLvayH46ZbHN"/>
+<div>
+<h3 class="text-label-md font-label-md font-bold text-on-surface">Dr. Harrison</h3>
+<p class="text-label-sm font-label-sm text-secondary">Professor of Economics</p>
+</div>
+</div>
+<div class="p-6 text-body-md font-body-md text-on-background leading-relaxed space-y-4">
+<p>
+                            Next week we will be moving on to discuss alternative economic models. One concept that has gained significant traction in recent policy debates is <strong>Universal Basic Income (UBI)</strong>. Under this system, all citizens receive a regular, unconditional sum of money from the government, regardless of their employment status or wealth.
+                        </p>
+<p>
+                            Proponents argue it eradicates extreme poverty and provides a safety net in an era of increasing automation. Critics, however, contend it would be prohibitively expensive and disincentivize work.
+                        </p>
+<p class="font-medium text-primary">
+                            I'd like to hear your thoughts. Do you believe implementing a Universal Basic Income is a viable and necessary step for modern economies, or are the risks too great?
+                        </p>
+</div>
+</article>
+<!-- Student 1 Post -->
+<article class="bg-surface-container-lowest notebook-border rounded-lg soft-shadow p-6 ml-0 md:ml-8 relative">
+<div class="absolute -left-[17px] top-8 w-4 h-[1px] bg-outline-variant hidden md:block"></div>
+<div class="flex items-start gap-4 mb-3">
+<img class="w-10 h-10 rounded-full object-cover border border-outline-variant" data-alt="A casual portrait of a young female college student looking thoughtful, sitting in a bright, modern campus cafe. Natural daylight, academic aesthetic, soft focus background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDEJwnjmAXNcvv7m15edArheT_GUdN4KFFDLPARekJFAV4MoS4aLrA1rqykMJe2V_nhz8MVGBtaeCAehWMavWpw3dJxYA11yToSmxlK8mu95Q6nshePjb9vv_3Vxwu7ngt1wf8IUTjKGmYvpBzplbf3JV4hTP1T0QorDY4EOWjpgYA8xbZJBecHBFlfgTw6tJaMclHjDLwtuAOc2hc9ydspHzHCRecz4QEzZRkXuHZ3lfJvOutIUlCo"/>
+<div>
+<h4 class="text-label-md font-label-md font-bold text-on-surface">Sarah M.</h4>
+<span class="text-label-sm font-label-sm text-secondary">2 hours ago</span>
+</div>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant">
+                        I strongly believe UBI is necessary. With AI and automation replacing jobs at a rapid pace, traditional employment might not be available for everyone in the future. UBI provides a baseline of dignity. Furthermore, studies have shown that when people aren't stressed about basic survival, they actually invest more time in education and entrepreneurial activities, which benefits the economy long-term.
+                    </p>
+</article>
+<!-- Student 2 Post -->
+<article class="bg-surface-container-lowest notebook-border rounded-lg soft-shadow p-6 ml-0 md:ml-8 relative">
+<div class="absolute -left-[17px] top-8 w-4 h-[1px] bg-outline-variant hidden md:block"></div>
+<div class="flex items-start gap-4 mb-3">
+<img class="w-10 h-10 rounded-full object-cover border border-outline-variant" data-alt="A portrait of a male college student in a university lecture hall, looking engaged and slightly critical. Clean lighting, studious atmosphere, academic modern style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuARYWb6ZaNJY2n4cSlElo6txrjHa6slNjrJpgfEycVaKiGWy3i8zHEde-S7FzLkGwcn_NSTErbUMwxDPS4er70aw4qxwZE8qhhuPyYq6QNyImszrWZTogYG1J60D-Q6NeXrIT50U81teGSIf7togm__J35RC_lARkENqLiHOT_ShIdifx00KOq-4eXsoAICf7l_xH2y9mTlbBHoOkyp6yQ_EynuS_fmS6wRryZ-BlvC9XTS12edRFE4"/>
+<div>
+<h4 class="text-label-md font-label-md font-bold text-on-surface">David C.</h4>
+<span class="text-label-sm font-label-sm text-secondary">1 hour ago</span>
+</div>
+</div>
+<p class="text-body-md font-body-md text-on-surface-variant">
+                        I disagree with Sarah. While the intention is good, the economic reality of UBI is flawed. The taxes required to fund such a massive program would stifle business growth and burden the middle class. Moreover, giving out money unconditionally can lead to inflation—if everyone suddenly has more cash, prices for rent and goods will likely just increase, negating the benefit. We should focus on targeted welfare and job retraining instead.
+                    </p>
+</article>
+</section>
+<!-- Right Column: Response Area & Feedback -->
+<aside class="lg:col-span-5 flex flex-col gap-6 lg:sticky lg:top-28">
+<!-- Input Panel -->
+<div class="bg-surface-container-lowest notebook-border rounded-lg soft-shadow flex flex-col h-[500px]">
+<div class="p-4 border-b notebook-border bg-surface-container-low rounded-t-lg flex justify-between items-center">
+<h2 class="text-label-md font-label-md font-bold text-on-surface">Your Response</h2>
+<span class="text-label-sm font-label-sm text-secondary bg-surface-variant px-2 py-1 rounded">Min. 100 words</span>
+</div>
+<div class="flex-grow p-4 relative">
+<textarea class="w-full h-full resize-none border-none focus:ring-0 p-0 text-body-md font-body-md text-on-surface bg-transparent placeholder:text-outline" id="response-text" placeholder="Type your response here..."></textarea>
+</div>
+<div class="p-4 border-t notebook-border bg-surface-container-low rounded-b-lg flex flex-col gap-4">
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-outline text-[18px]">edit_note</span>
+<span class="text-label-md font-label-md text-on-surface-variant" id="word-count">0 words</span>
+</div>
+<!-- Progress bar for word count target -->
+<div class="w-24 h-1 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-outline transition-all duration-300" id="word-progress" style="width: 0%;"></div>
+</div>
+</div>
+<button class="w-full bg-primary hover:bg-on-primary-fixed-variant text-on-primary text-label-md font-label-md py-3 rounded transition-colors flex items-center justify-center gap-2">
+                            Submit for AI Scoring
+                            <span class="material-symbols-outlined text-[18px]">send</span>
+</button>
+</div>
+</div>
+<!-- Mock AI Scoring Result Panel (Showing aesthetic for prompt requirements) -->
+<div class="bg-surface-container-lowest notebook-border rounded-lg soft-shadow overflow-hidden opacity-90 relative">
+<!-- Decorator line -->
+<div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
+<div class="p-5 border-b notebook-border flex justify-between items-start">
+<div>
+<h3 class="text-headline-md font-headline-md text-on-surface mb-1">Score Result</h3>
+<p class="text-label-sm font-label-sm text-secondary">AI Evaluation based on TOEFL iBT criteria</p>
+</div>
+<div class="bg-tertiary-fixed text-on-tertiary-fixed-variant px-3 py-1 rounded text-label-md font-label-md font-bold">
+                            Score: 4.5 / 5.0
+                        </div>
+</div>
+<div class="p-5 space-y-4">
+<div class="flex items-center gap-3">
+<span class="text-label-md font-label-md font-bold text-on-surface">CEFR Level:</span>
+<span class="bg-secondary-container text-on-secondary-container px-2 py-0.5 rounded text-label-sm font-label-sm">C1 Advanced</span>
+</div>
+<!-- Strengths -->
+<div>
+<h4 class="text-label-md font-label-md font-semibold text-primary mb-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+                                Strengths
+                            </h4>
+<ul class="list-disc pl-5 text-label-sm font-label-sm text-on-surface-variant space-y-1">
+<li>Clear presentation of opinion aligning with the prompt.</li>
+<li>Effective use of complex sentence structures.</li>
+</ul>
+</div>
+<!-- Errors -->
+<div>
+<h4 class="text-label-md font-label-md font-semibold text-error mb-2 flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">error</span>
+                                Areas for Improvement
+                            </h4>
+<ul class="list-disc pl-5 text-label-sm font-label-sm text-on-surface-variant space-y-1">
+<li>Minor article usage errors (e.g., "the inflation").</li>
+<li>Could improve transition between acknowledging David's point and presenting your counter-argument.</li>
+</ul>
+</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-surface-dim full-width border-t border-outline-variant dark:border-outline flat no shadows mt-auto">
+<div class="w-full py-unit-3 px-margin-desktop max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="text-label-md font-label-md font-semibold text-secondary">
+                © 2026 Academic Modern TOEFL. All rights reserved.
+            </div>
+<div class="flex flex-wrap gap-4 justify-center">
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors text-body-md font-body-md" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors text-body-md font-body-md" href="#">Terms of Service</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors text-body-md font-body-md" href="#">Help Center</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors text-body-md font-body-md" href="#">Academic Integrity</a>
+</div>
+</div>
+</footer>
+<script>
+        // Simple word count logic for demonstration
+        const textarea = document.getElementById('response-text');
+        const wordCountDisplay = document.getElementById('word-count');
+        const wordProgress = document.getElementById('word-progress');
+        const minWords = 100;
+
+        textarea.addEventListener('input', function() {
+            const text = this.value.trim();
+            const words = text ? text.split(/\s+/).length : 0;
+            
+            wordCountDisplay.textContent = `${words} words`;
+            
+            // Update progress bar
+            let progressPercentage = (words / minWords) * 100;
+            if (progressPercentage > 100) progressPercentage = 100;
+            wordProgress.style.width = `${progressPercentage}%`;
+
+            // Change color if minimum met
+            if (words >= minWords) {
+                wordProgress.classList.remove('bg-outline');
+                wordProgress.classList.add('bg-primary');
+                wordCountDisplay.classList.add('text-primary');
+                wordCountDisplay.classList.remove('text-on-surface-variant');
+            } else {
+                wordProgress.classList.add('bg-outline');
+                wordProgress.classList.remove('bg-primary');
+                wordCountDisplay.classList.remove('text-primary');
+                wordCountDisplay.classList.add('text-on-surface-variant');
+            }
+        });
+    </script>
+</body></html>
