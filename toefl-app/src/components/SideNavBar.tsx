@@ -1,6 +1,22 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function SideNavBar() {
+  const pathname = usePathname();
+
+  const isActive = (path: string) => {
+    if (path === '/dashboard') return pathname === '/dashboard';
+    return pathname?.startsWith(path);
+  };
+
+  const getLinkClasses = (path: string) => {
+    return isActive(path) 
+      ? "flex items-center gap-3 px-3 py-2 text-primary font-bold bg-surface-container-highest rounded-lg transition-transform"
+      : "flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-highest rounded-lg transition-all";
+  };
+
   return (
     <nav className="hidden md:flex flex-col bg-surface-container-low h-full w-64 fixed left-0 top-0 border-r border-outline-variant p-2 gap-6 z-20">
       <div className="px-6 pt-6">
@@ -12,20 +28,30 @@ export default function SideNavBar() {
           <li>
             <Link
               href="/dashboard"
-              className="flex items-center gap-3 px-3 py-2 text-primary font-bold bg-surface-container-highest rounded-lg transition-transform"
+              className={getLinkClasses('/dashboard')}
             >
-              <span className="material-symbols-outlined icon-filled">dashboard</span>
+              <span className="material-symbols-outlined">dashboard</span>
               <span className="text-[14px]">Home</span>
             </Link>
           </li>
           
+          <li>
+            <Link
+              href="/dashboard/review"
+              className={getLinkClasses('/dashboard/review')}
+            >
+              <span className="material-symbols-outlined">rate_review</span>
+              <span className="text-[14px]">Review</span>
+            </Link>
+          </li>
+
           <li>
             <div className="px-3 pb-2 pt-2 text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Speaking Section</div>
             <ul className="space-y-1">
               <li>
                 <Link
                   href="/practice/speaking/listen-and-repeat"
-                  className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-highest rounded-lg transition-all"
+                  className={getLinkClasses('/practice/speaking/listen-and-repeat')}
                 >
                   <span className="material-symbols-outlined text-[18px]">record_voice_over</span>
                   <span className="text-[14px]">Listen & Repeat</span>
@@ -34,7 +60,7 @@ export default function SideNavBar() {
               <li>
                 <Link
                   href="/practice/speaking/take-interview"
-                  className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-highest rounded-lg transition-all"
+                  className={getLinkClasses('/practice/speaking/take-interview')}
                 >
                   <span className="material-symbols-outlined text-[18px]">mic</span>
                   <span className="text-[14px]">Take an Interview</span>
@@ -49,7 +75,7 @@ export default function SideNavBar() {
               <li>
                 <Link
                   href="/practice/writing/build-sentence"
-                  className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-highest rounded-lg transition-all"
+                  className={getLinkClasses('/practice/writing/build-sentence')}
                 >
                   <span className="material-symbols-outlined text-[18px]">format_shapes</span>
                   <span className="text-[14px]">Build a Sentence</span>
@@ -58,7 +84,7 @@ export default function SideNavBar() {
               <li>
                 <Link
                   href="/practice/writing/write-email"
-                  className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-highest rounded-lg transition-all"
+                  className={getLinkClasses('/practice/writing/write-email')}
                 >
                   <span className="material-symbols-outlined text-[18px]">mail</span>
                   <span className="text-[14px]">Write an Email</span>
@@ -67,7 +93,7 @@ export default function SideNavBar() {
               <li>
                 <Link
                   href="/practice/writing/academic-discussion"
-                  className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-highest rounded-lg transition-all"
+                  className={getLinkClasses('/practice/writing/academic-discussion')}
                 >
                   <span className="material-symbols-outlined text-[18px]">edit_note</span>
                   <span className="text-[14px]">Academic Discussion</span>
@@ -85,7 +111,7 @@ export default function SideNavBar() {
           <li>
             <Link
               href="/dashboard/settings"
-              className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-highest rounded-lg transition-all"
+              className={getLinkClasses('/dashboard/settings')}
             >
               <span className="material-symbols-outlined text-[20px]">settings</span>
               <span className="text-[12px] font-semibold">Settings</span>

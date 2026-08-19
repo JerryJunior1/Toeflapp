@@ -20,13 +20,8 @@ export default function DashboardLayout({
 
         {/* Desktop Top Nav (inside dashboard) */}
         <header className="hidden md:flex bg-surface w-full h-16 border-b border-outline-variant sticky top-0 z-10 justify-between items-center px-[var(--spacing-margin-desktop)]">
-          <div className="flex-1 flex justify-center">
-             <ul className="flex gap-8">
-               <li><a className="text-[14px] font-medium text-primary border-b-2 border-primary pb-1" href="/dashboard">Dashboard</a></li>
-               <li><a className="text-[14px] font-medium text-on-surface-variant hover:text-primary transition-colors" href="/practice/academic-discussion">Practice</a></li>
-               <li><a className="text-[14px] font-medium text-on-surface-variant hover:text-primary transition-colors" href="#">Modules</a></li>
-               <li><a className="text-[14px] font-medium text-on-surface-variant hover:text-primary transition-colors" href="#">Review</a></li>
-             </ul>
+          <div className="flex-1">
+             {/* Removed top navigation links */}
           </div>
           <div className="flex items-center gap-4 text-primary">
             <button className="hover:opacity-80 transition-opacity"><span className="material-symbols-outlined">notifications</span></button>
