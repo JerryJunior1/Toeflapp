@@ -15,7 +15,7 @@ async function run() {
   
   const file = await ai.files.upload({
     file: "D:/Toeflapp/DocToefl/DOC-20260607-WA0001_260611_181849.pdf",
-    mimeType: "application/pdf"
+    config: { mimeType: "application/pdf" }
   });
   console.log("Uploaded as:", file.name);
 
@@ -48,7 +48,7 @@ Output strictly as a JSON array (no markdown) with schema:
         role: "user",
         parts: [
           { text: prompt },
-          { fileData: { fileUri: file.uri, mimeType: file.mimeType } }
+          { fileData: { fileUri: file.uri || "", mimeType: file.mimeType || "application/pdf" } }
         ]
       }
     ],
@@ -60,13 +60,18 @@ Output strictly as a JSON array (no markdown) with schema:
   const text = response.text;
   console.log("Raw Response:", text);
   
+  if (!text) {
+    console.error("No text returned from Gemini");
+    return;
+  }
+  
   try {
     const tasks = JSON.parse(text);
     console.log(`Parsed ${tasks.length} tasks. Inserting...`);
     
     for (const t of tasks) {
       console.log(`Inserting: ${t.topic_title}`);
-      await supabase.table('academic_tasks').insert(t);
+      await supabase.from('academic_tasks').insert(t);
     }
     console.log("Success!");
   } catch(e) {
