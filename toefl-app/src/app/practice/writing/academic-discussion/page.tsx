@@ -14,6 +14,7 @@ interface DiscussionData {
 export default function AcademicDiscussion() {
   const [tasksList, setTasksList] = useState<any[]>([]);
   const [selectedTask, setSelectedTask] = useState<DiscussionData | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -112,6 +113,10 @@ export default function AcademicDiscussion() {
 
   // --- LIST VIEW ---
   if (!selectedTask) {
+    const filteredTasks = tasksList.filter(t => 
+      t.topic_title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
       <div className="w-full max-w-[var(--spacing-container-max)] mx-auto flex flex-col gap-6">
         <div className="card rounded-xl p-8 flex flex-col gap-4">
@@ -120,12 +125,28 @@ export default function AcademicDiscussion() {
             <span className="text-[16px] font-semibold text-primary uppercase tracking-wider">Practice Library</span>
           </div>
           <h1 className="font-headline text-[32px] font-bold text-on-surface">Academic Discussion Tasks</h1>
-          <p className="text-[16px] text-on-surface-variant leading-relaxed mb-6">
-            Select a real, official TOEFL practice prompt from the library below to begin your practice.
-          </p>
+          
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <p className="text-[16px] text-on-surface-variant leading-relaxed max-w-lg">
+              Select a real, official TOEFL practice prompt from the library below to begin your practice.
+            </p>
+            <div className="relative w-full md:w-72 shrink-0">
+              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+              <input 
+                type="text" 
+                placeholder="Search topics..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-surface-variant rounded-lg focus:outline-none focus:border-primary transition-colors text-[14px] text-on-surface"
+              />
+            </div>
+          </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {tasksList.map((task) => (
+            {filteredTasks.length === 0 ? (
+              <p className="text-[14px] text-on-surface-variant italic col-span-full">No topics found matching "{searchQuery}".</p>
+            ) : (
+              filteredTasks.map((task) => (
               <div 
                 key={task.id} 
                 onClick={() => handleSelectTask(task.id)}
@@ -147,7 +168,8 @@ export default function AcademicDiscussion() {
                   </p>
                 </div>
               </div>
-            ))}
+            ))
+            )}
           </div>
         </div>
       </div>

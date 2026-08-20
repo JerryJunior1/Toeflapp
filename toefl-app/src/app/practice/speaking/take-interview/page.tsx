@@ -27,6 +27,7 @@ interface InterviewTaskData {
 export default function TakeInterview() {
   const [tasksList, setTasksList] = useState<InterviewTaskData[]>([]);
   const [selectedTask, setSelectedTask] = useState<InterviewTaskData | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
@@ -240,6 +241,11 @@ export default function TakeInterview() {
 
   // --- LIST VIEW ---
   if (!selectedTask) {
+    const filteredTasks = tasksList.filter(t => 
+      t.task_title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      t.scenario_context.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
       <div className="w-full max-w-[var(--spacing-container-max)] mx-auto flex flex-col gap-6">
         <div className="card rounded-xl p-8 flex flex-col gap-4">
@@ -248,11 +254,24 @@ export default function TakeInterview() {
             <span className="text-[16px] font-semibold text-primary uppercase tracking-wider">Speaking Practice</span>
           </div>
           <h1 className="font-headline text-[32px] font-bold text-on-surface">Take an Interview</h1>
-          <p className="text-[16px] text-on-surface-variant leading-relaxed mb-6">
-            Practice realistic TOEFL speaking interview questions. Use your microphone to record your answers.
-          </p>
           
-          {tasksList.length === 0 ? (
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+            <p className="text-[16px] text-on-surface-variant leading-relaxed max-w-lg">
+              Practice realistic TOEFL speaking interview questions. Use your microphone to record your answers.
+            </p>
+            <div className="relative w-full md:w-72 shrink-0">
+              <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+              <input 
+                type="text" 
+                placeholder="Search topics..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-surface-variant rounded-lg focus:outline-none focus:border-primary transition-colors text-[14px] text-on-surface"
+              />
+            </div>
+          </div>
+          
+          {filteredTasks.length === 0 ? (
              <div className="p-8 text-center bg-surface-container-low rounded-xl border border-dashed border-surface-variant">
                <p className="text-on-surface-variant">No tasks found. Your database might be empty!</p>
              </div>
@@ -260,7 +279,7 @@ export default function TakeInterview() {
             <div className="flex flex-col gap-8">
               {/* Part 1: TOEFL Format */}
               {(() => {
-                const part1Tasks = tasksList.filter(t => t.category === 'TOEFL Format' || !t.category);
+                const part1Tasks = filteredTasks.filter(t => t.category === 'TOEFL Format' || !t.category);
                 return (
                   <div>
                     <h2 className="text-[20px] font-bold text-on-surface mb-4 flex items-center gap-2">
@@ -305,7 +324,7 @@ export default function TakeInterview() {
 
               {/* Part 2: Just Interview */}
               {(() => {
-                const part2Tasks = tasksList.filter(t => t.category === 'Just Interview');
+                const part2Tasks = filteredTasks.filter(t => t.category === 'Just Interview');
                 return (
                   <div>
                     <h2 className="text-[20px] font-bold text-on-surface mb-4 flex items-center gap-2">
