@@ -36,6 +36,7 @@ export default function TakeInterview() {
   const [isRecording, setIsRecording] = useState(false);
   const [audioBlobUrl, setAudioBlobUrl] = useState<string | null>(null);
   const [audioBase64, setAudioBase64] = useState<string | null>(null);
+  const [audioMimeType, setAudioMimeType] = useState<string>('audio/webm');
   const [isSubmitting, setIsSubmitting] = useState(false);
   
   // Timer State
@@ -101,7 +102,15 @@ export default function TakeInterview() {
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+      
+      let mimeType = '';
+      if (MediaRecorder.isTypeSupported('audio/webm')) {
+        mimeType = 'audio/webm';
+      } else if (MediaRecorder.isTypeSupported('audio/mp4')) {
+        mimeType = 'audio/mp4';
+      }
+      
+      const mediaRecorder = mimeType ? new MediaRecorder(stream, { mimeType }) : new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
       audioChunksRef.current = [];
 
@@ -112,7 +121,10 @@ export default function TakeInterview() {
       };
 
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const actualMimeType = mediaRecorder.mimeType || mimeType || 'audio/webm';
+        setAudioMimeType(actualMimeType);
+        
+        const audioBlob = new Blob(audioChunksRef.current, { type: actualMimeType });
         const audioUrl = URL.createObjectURL(audioBlob);
         setAudioBlobUrl(audioUrl);
 
@@ -192,7 +204,7 @@ export default function TakeInterview() {
             modelResponse: currentQuestion.model_response
           },
           audioBase64: audioBase64,
-          mimeType: 'audio/webm'
+          mimeType: audioMimeType
         }),
       });
       const json = await res.json();
@@ -453,7 +465,7 @@ export default function TakeInterview() {
                     
                     {audioBlobUrl && !isRecording && (
                         <div className="mt-4">
-                            <audio src={audioBlobUrl} controls className="h-10" />
+                            <audio src={audioBlobUrl} controls playsInline className="h-10" />
                         </div>
                     )}
                 </div>
