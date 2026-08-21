@@ -451,8 +451,11 @@ export default function TakeInterview() {
 
                     <button 
                         onClick={toggleRecording}
+                        disabled={!!audioBlobUrl}
                         className={`w-24 h-24 rounded-2xl flex items-center justify-center transition-all shadow-md ${
-                            isRecording 
+                            !!audioBlobUrl
+                            ? 'bg-surface-variant text-on-surface-variant cursor-not-allowed'
+                            : isRecording 
                             ? 'bg-error text-white animate-pulse shadow-error/30' 
                             : 'bg-primary text-white hover:bg-primary-container hover:text-on-primary-container shadow-primary/20 hover:scale-105'
                         }`}
@@ -460,7 +463,7 @@ export default function TakeInterview() {
                         <span className="material-symbols-outlined text-[40px]">{isRecording ? 'stop' : 'mic'}</span>
                     </button>
                     <p className="text-on-surface-variant font-medium mt-2">
-                        {isRecording ? "Recording in progress..." : audioBlobUrl ? "Recording complete. Click mic to re-record." : "Click to start recording"}
+                        {isRecording ? "Recording in progress..." : audioBlobUrl ? "Recording complete. Click Submit to continue." : "Click to start recording"}
                     </p>
                     
                     {audioBlobUrl && !isRecording && (
