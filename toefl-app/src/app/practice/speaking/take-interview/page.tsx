@@ -45,10 +45,31 @@ export default function TakeInterview() {
   // Grading state (store an array of grading results matching the questions)
   const [gradingResults, setGradingResults] = useState<any[]>([]);
   const [gradingError, setGradingError] = useState<string | null>(null);
+  const [isSpeaking, setIsSpeaking] = useState(false);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<BlobPart[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // --- Text-to-Speech ---
+  const speakQuestion = (text: string) => {
+    if (typeof window === 'undefined' || !window.speechSynthesis) return;
+    window.speechSynthesis.cancel(); // cancel any ongoing speech
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 0.9;   // slightly slower for clarity
+    utterance.pitch = 1;
+    utterance.lang = 'en-US';
+    // Try to pick a natural-sounding English voice
+    const voices = window.speechSynthesis.getVoices();
+    const preferred = voices.find(v => v.lang === 'en-US' && v.localService === false)
+      || voices.find(v => v.lang === 'en-US')
+      || voices[0];
+    if (preferred) utterance.voice = preferred;
+    utterance.onstart = () => setIsSpeaking(true);
+    utterance.onend = () => setIsSpeaking(false);
+    utterance.onerror = () => setIsSpeaking(false);
+    window.speechSynthesis.speak(utterance);
+  };
 
   useEffect(() => {
     async function fetchList() {
@@ -65,6 +86,19 @@ export default function TakeInterview() {
     }
     fetchList();
   }, []);
+
+  // Auto-read question aloud when a new question appears
+  useEffect(() => {
+    if (selectedTask) {
+      const q = selectedTask.questions[currentQuestionIndex]?.question;
+      if (q) {
+        // Small delay so the page has fully rendered before speaking
+        const timeout = setTimeout(() => speakQuestion(q), 600);
+        return () => clearTimeout(timeout);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedTask, currentQuestionIndex]);
 
   // Audio capture is handled via MediaRecorder in startRecording
 
@@ -89,6 +123,8 @@ export default function TakeInterview() {
   };
 
   const handleBack = () => {
+    window.speechSynthesis?.cancel();
+    setIsSpeaking(false);
     setSelectedTask(null);
     setAudioBlobUrl(null);
     setAudioBase64(null);
@@ -319,7 +355,7 @@ export default function TakeInterview() {
                               {task.lastScore && (
                                 <div className="text-[14px] text-primary font-medium bg-primary/10 w-fit px-2 py-0.5 rounded flex items-center gap-1">
                                   <span className="material-symbols-outlined text-[14px]">star</span>
-                                  Last Score: {task.lastScore}
+                                  Avg Score: {task.lastScore}
                                 </div>
                               )}
                               <p className="text-[14px] text-on-surface-variant flex items-center gap-1">
@@ -364,7 +400,7 @@ export default function TakeInterview() {
                               {task.lastScore && (
                                 <div className="text-[14px] text-primary font-medium bg-primary/10 w-fit px-2 py-0.5 rounded flex items-center gap-1">
                                   <span className="material-symbols-outlined text-[14px]">star</span>
-                                  Last Score: {task.lastScore}
+                                  Avg Score: {task.lastScore}
                                 </div>
                               )}
                               <p className="text-[14px] text-on-surface-variant flex items-center gap-1">
@@ -439,9 +475,32 @@ export default function TakeInterview() {
                 Question {currentQuestionIndex + 1} of {selectedTask.questions.length}
             </div>
             
-            <h2 className="font-headline text-[24px] md:text-[28px] font-bold text-on-surface text-center leading-relaxed max-w-2xl mb-12">
+            <h2 className="font-headline text-[24px] md:text-[28px] font-bold text-on-surface text-center leading-relaxed max-w-2xl mb-4">
                 "{currentQuestion.question}"
             </h2>
+
+            {/* TTS Controls */}
+            <div className="flex items-center gap-3 mb-8">
+              {isSpeaking ? (
+                <div className="flex items-center gap-2 text-primary text-[13px] font-medium">
+                  <span className="flex gap-0.5">
+                    <span className="w-1 h-4 bg-primary rounded animate-bounce [animation-delay:0ms]"></span>
+                    <span className="w-1 h-4 bg-primary rounded animate-bounce [animation-delay:150ms]"></span>
+                    <span className="w-1 h-4 bg-primary rounded animate-bounce [animation-delay:300ms]"></span>
+                  </span>
+                  Speaking...
+                </div>
+              ) : (
+                <button
+                  onClick={() => speakQuestion(currentQuestion.question)}
+                  className="flex items-center gap-1.5 text-[13px] text-on-surface-variant hover:text-primary transition-colors"
+                  title="Replay question"
+                >
+                  <span className="material-symbols-outlined text-[18px]">replay</span>
+                  Replay question
+                </button>
+              )}
+            </div>
 
             {!currentGrading && (
                 <div className="flex flex-col items-center gap-4 mb-12">
@@ -451,9 +510,9 @@ export default function TakeInterview() {
 
                     <button 
                         onClick={toggleRecording}
-                        disabled={!!audioBlobUrl}
+                        disabled={!!audioBlobUrl || isSpeaking}
                         className={`w-24 h-24 rounded-2xl flex items-center justify-center transition-all shadow-md ${
-                            !!audioBlobUrl
+                            !!audioBlobUrl || isSpeaking
                             ? 'bg-surface-variant text-on-surface-variant cursor-not-allowed'
                             : isRecording 
                             ? 'bg-error text-white animate-pulse shadow-error/30' 
@@ -463,7 +522,7 @@ export default function TakeInterview() {
                         <span className="material-symbols-outlined text-[40px]">{isRecording ? 'stop' : 'mic'}</span>
                     </button>
                     <p className="text-on-surface-variant font-medium mt-2">
-                        {isRecording ? "Recording in progress..." : audioBlobUrl ? "Recording complete. Click Submit to continue." : "Click to start recording"}
+                        {isSpeaking ? "Listen to the question..." : isRecording ? "Recording in progress..." : audioBlobUrl ? "Recording complete. Click Submit to continue." : "Click to start recording"}
                     </p>
                     
                     {audioBlobUrl && !isRecording && (

@@ -34,8 +34,7 @@ export async function GET(request: Request) {
           .from('practice_sessions')
           .select('task_id, score_value')
           .eq('user_id', user.id)
-          .eq('task_type', 'take-interview')
-          .order('created_at', { ascending: false });
+          .eq('task_type', 'take-interview');
           
         if (userSessions) {
           sessions = userSessions;
@@ -43,11 +42,21 @@ export async function GET(request: Request) {
       }
       
       const enhancedData = data.map(task => {
-        // Find the first matching session (since they are ordered by created_at descending)
-        const lastSession = sessions.find(s => s.task_id === task.id);
+        // Find all sessions for this task and calculate the average score
+        const taskSessions = sessions.filter(s => s.task_id === task.id);
+        let avgScore: string | null = null;
+        if (taskSessions.length > 0) {
+          const numerators = taskSessions
+            .map(s => parseFloat(String(s.score_value).split('/')[0]))
+            .filter(n => !isNaN(n));
+          if (numerators.length > 0) {
+            const avg = numerators.reduce((a, b) => a + b, 0) / numerators.length;
+            avgScore = `${Math.round(avg * 10) / 10}/5`;
+          }
+        }
         return {
           ...task,
-          lastScore: lastSession ? lastSession.score_value : null
+          lastScore: avgScore  // keep field name for UI compatibility
         };
       });
       
