@@ -104,6 +104,16 @@ export default function SideNavBar({
                     <span className="text-[14px]">Take an Interview</span>
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/dashboard/templates"
+                    className={getLinkClasses('/dashboard/templates')}
+                    onClick={closeSidebar}
+                  >
+                    <span className="material-symbols-outlined text-[18px]">menu_book</span>
+                    <span className="text-[14px]">Response Templates</span>
+                  </Link>
+                </li>
               </ul>
             </li>
 
