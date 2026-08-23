@@ -575,14 +575,21 @@ export default function TakeInterview() {
                   </div>
                 </div>
 
-                {currentGrading?.transcript && (
-                  <div className="w-full mb-6 p-4 bg-surface border border-outline-variant rounded-lg">
-                    <h4 className="text-[14px] font-bold text-on-surface-variant uppercase tracking-wider mb-2 flex items-center gap-2">
-                      <span className="material-symbols-outlined text-[18px]">transcribe</span> Verbatim Transcript
-                    </h4>
-                    <p className="text-[16px] text-on-surface leading-relaxed whitespace-pre-wrap italic opacity-80">{currentGrading.transcript}</p>
-                  </div>
-                )}
+                {currentGrading?.transcript && (() => {
+                  const wordCount = currentGrading.transcript.trim().split(/\s+/).filter(Boolean).length;
+                  return (
+                    <div className="w-full mb-6 p-4 bg-surface border border-outline-variant rounded-lg">
+                      <h4 className="text-[14px] font-bold text-on-surface-variant uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <span className="material-symbols-outlined text-[18px]">transcribe</span>
+                        Verbatim Transcript
+                        <span className="ml-auto text-[12px] font-semibold bg-surface-container-high text-on-surface-variant px-2.5 py-1 rounded-full normal-case tracking-normal">
+                          {wordCount} word{wordCount !== 1 ? 's' : ''}
+                        </span>
+                      </h4>
+                      <p className="text-[16px] text-on-surface leading-relaxed whitespace-pre-wrap italic opacity-80">{currentGrading.transcript}</p>
+                    </div>
+                  );
+                })()}
 
                 <div className="bg-surface-container-low p-6 rounded-xl border border-surface-variant mb-6">
                   <p className="text-[16px] text-on-surface leading-relaxed">{currentGrading.overallFeedback}</p>
@@ -641,6 +648,9 @@ export default function TakeInterview() {
                   <div className="bg-[#1a73e8]/5 p-6 rounded-xl border border-[#1a73e8]/20 mb-6">
                     <h3 className="text-[16px] font-bold text-[#1a73e8] mb-4 flex items-center gap-2">
                       <span className="material-symbols-outlined text-[20px]">auto_awesome</span> Your Improved Answer (Score: 5/5)
+                      <span className="ml-auto text-[12px] font-semibold bg-[#1a73e8]/10 text-[#1a73e8] px-2.5 py-1 rounded-full">
+                        {currentGrading.idealResponse.trim().split(/\s+/).filter(Boolean).length} words
+                      </span>
                     </h3>
                     <div className="relative">
                       <span className="material-symbols-outlined absolute text-[40px] text-[#1a73e8]/10 -top-2 -left-2">format_quote</span>
@@ -655,6 +665,9 @@ export default function TakeInterview() {
                   <div className="bg-primary/5 p-6 rounded-xl border border-primary/20 mb-8">
                     <h3 className="text-[16px] font-bold text-primary mb-4 flex items-center gap-2">
                       <span className="material-symbols-outlined text-[20px]">workspace_premium</span> Official Model Answer
+                      <span className="ml-auto text-[12px] font-semibold bg-primary/10 text-primary px-2.5 py-1 rounded-full">
+                        {currentQuestion.model_response.trim().split(/\s+/).filter(Boolean).length} words
+                      </span>
                     </h3>
                     <div className="relative">
                       <span className="material-symbols-outlined absolute text-[40px] text-primary/10 -top-2 -left-2">format_quote</span>
