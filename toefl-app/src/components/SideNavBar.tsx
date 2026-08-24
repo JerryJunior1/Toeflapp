@@ -152,6 +152,39 @@ export default function SideNavBar({
                 </li>
               </ul>
             </li>
+
+            {/* ── TATIANA ── */}
+            <li>
+              <div className="px-3 pb-2 pt-2 text-[11px] font-bold uppercase tracking-wider flex items-center gap-1.5" style={{ color: '#7b3fb3' }}>
+                <span className="material-symbols-outlined text-[14px]">school</span>
+                Tatiana
+              </div>
+              <ul className="space-y-1">
+                <li>
+                  <div className="px-3 pb-1 pt-1 text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider">Speaking</div>
+                </li>
+                <li>
+                  <Link
+                    href="/tatiana/speaking/listen-and-repeat"
+                    className={getLinkClasses('/tatiana/speaking/listen-and-repeat')}
+                    onClick={closeSidebar}
+                  >
+                    <span className="material-symbols-outlined text-[18px]">record_voice_over</span>
+                    <span className="text-[14px]">Listen &amp; Repeat</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/tatiana/speaking/take-interview"
+                    className={getLinkClasses('/tatiana/speaking/take-interview')}
+                    onClick={closeSidebar}
+                  >
+                    <span className="material-symbols-outlined text-[18px]">mic</span>
+                    <span className="text-[14px]">Take an Interview</span>
+                  </Link>
+                </li>
+              </ul>
+            </li>
           </ul>
         </div>
         

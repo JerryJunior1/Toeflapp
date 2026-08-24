@@ -32,6 +32,18 @@ Score: 1 - An unsuccessful response. The response minimally addresses the questi
 Score: 0 - No response OR the response is entirely unintelligible OR there is no English in the response OR the content is entirely unconnected to the prompt.
 `;
 
+    const listenRepeatRubric = `
+Scoring Guide for the TOEFL Listen and Repeat Task
+This task tests the student's ability to accurately repeat a sentence they heard, demonstrating pronunciation, prosody, and memory.
+
+Score: 5 - Perfect or near-perfect repetition. All words are present and correctly ordered. Pronunciation is clear and intelligible. Stress and intonation closely match natural English speech. No significant omissions or substitutions.
+Score: 4 - Good repetition with only minor differences. One small omission or word substitution that does not change the overall meaning. Pronunciation is generally clear. Stress and rhythm are appropriate.
+Score: 3 - Acceptable repetition but with noticeable errors. Some words are omitted or substituted, changing meaning slightly. Pronunciation errors are present but the sentence is still mostly intelligible. Rhythm or stress may be inconsistent.
+Score: 2 - Partial repetition. Significant words are missing or substituted. The response captures only part of the sentence. Pronunciation is limited in clarity or intelligibility.
+Score: 1 - Minimal repetition. Only 1-2 words or phrases from the target sentence are present. The response is mostly unrelated or unintelligible.
+Score: 0 - No response, completely unintelligible, or no English content related to the target sentence.
+`;
+
     // 2. Initialize Gemini AI
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({ model: "gemini-3.6-flash" });
@@ -39,7 +51,44 @@ Score: 0 - No response OR the response is entirely unintelligible OR there is no
     // 3. Construct Grading Prompt
     let gradingPrompt = "";
     
-    if (taskType === "take-interview") {
+    if (taskType === "listen-and-repeat") {
+      gradingPrompt = `
+      You are an expert TOEFL iBT examiner grading a "Listen and Repeat" spoken response.
+      The student was asked to listen to a sentence and repeat it exactly once.
+
+      ### OFFICIAL TOEFL LISTEN & REPEAT SCORING RUBRIC:
+      ${listenRepeatRubric}
+
+      ### TARGET SENTENCE (what the student should have said):
+      "${promptData.targetSentence}"
+
+      ### INSTRUCTIONS:
+      Listen carefully to the provided audio recording. Transcribe exactly what the student said.
+      Then compare their repetition to the target sentence above.
+      Evaluate on:
+      1. ACCURACY: Did they say all the words correctly and in the right order?
+      2. PRONUNCIATION: Were individual words pronounced clearly?
+      3. PROSODY: Did the stress, rhythm, and intonation sound natural?
+      4. COMPLETENESS: Did they say the entire sentence without major omissions?
+
+      You MUST output your evaluation EXACTLY in the following JSON format (no markdown, no backticks):
+      {
+        "transcript": "The exact verbatim transcript of what the student said",
+        "score": "X/5",
+        "overallFeedback": "A 2-3 sentence evaluation covering accuracy, pronunciation, and prosody.",
+        "strengths": ["strength 1", "strength 2"],
+        "weaknesses": ["weakness 1 — be specific about which words or sounds were wrong"],
+        "grammarCorrections": [
+          {
+            "original": "what the student actually said (only if different from target)",
+            "corrected": "the correct word/phrase from the target sentence",
+            "explanation": "What was different and why it matters"
+          }
+        ],
+        "idealResponse": "The exact target sentence written out perfectly: ${promptData.targetSentence}"
+      }
+      `;
+    } else if (taskType === "take-interview") {
       gradingPrompt = `
       You are an expert, strict official TOEFL iBT examiner grading a spoken interview response.
       You have been provided with an audio recording of the student's response.
