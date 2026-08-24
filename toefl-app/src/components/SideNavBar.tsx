@@ -183,6 +183,40 @@ export default function SideNavBar({
                     <span className="text-[14px]">Take an Interview</span>
                   </Link>
                 </li>
+                
+                <li>
+                  <div className="px-3 pb-1 pt-3 text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider">Writing</div>
+                </li>
+                <li>
+                  <Link
+                    href="/tatiana/writing/build-sentence"
+                    className={getLinkClasses('/tatiana/writing/build-sentence')}
+                    onClick={closeSidebar}
+                  >
+                    <span className="material-symbols-outlined text-[18px]">format_shapes</span>
+                    <span className="text-[14px]">Build a Sentence</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/tatiana/writing/write-email"
+                    className={getLinkClasses('/tatiana/writing/write-email')}
+                    onClick={closeSidebar}
+                  >
+                    <span className="material-symbols-outlined text-[18px]">mail</span>
+                    <span className="text-[14px]">Write an Email</span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/tatiana/writing/academic-discussion"
+                    className={getLinkClasses('/tatiana/writing/academic-discussion')}
+                    onClick={closeSidebar}
+                  >
+                    <span className="material-symbols-outlined text-[18px]">edit_note</span>
+                    <span className="text-[14px]">Academic Discussion</span>
+                  </Link>
+                </li>
               </ul>
             </li>
           </ul>

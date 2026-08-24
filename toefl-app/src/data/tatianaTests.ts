@@ -1,5 +1,5 @@
-// Tatiana's TOEFL Practice Tests — Speaking Data
-// 11 full tests with Listen & Repeat and Take an Interview
+// Tatiana's TOEFL Practice Tests — Speaking & Writing Data
+// 11 full tests with Listen & Repeat, Take an Interview, Build a Sentence, Write an Email, Academic Discussion
 
 export interface RepeatSentence {
   id: number;
@@ -10,6 +10,13 @@ export interface InterviewQuestion {
   id: number;
   question: string;
   sampleAnswer: string;
+}
+
+export interface BuildSentenceItem {
+  id: number;
+  prompt: string;       // The original context sentence shown to the user
+  scrambled: string;    // The scrambled word bank
+  answer: string;       // The correct reconstructed sentence
 }
 
 export interface TatianaTest {
@@ -26,6 +33,24 @@ export interface TatianaTest {
   interview: {
     scenario: string;
     questions: InterviewQuestion[];
+  };
+
+  // Writing (optional — test 11 is speaking-only)
+  writing?: {
+    buildSentence: BuildSentenceItem[];
+    writeEmail: {
+      situation: string;
+      task: string[];
+      to: string;
+      subject: string;
+      sampleAnswer: string;
+    };
+    academicDiscussion: {
+      professorPrompt: string;
+      student1: { name: string; post: string };
+      student2: { name: string; post: string };
+      sampleAnswer: string;
+    };
   };
 }
 
@@ -70,6 +95,33 @@ export const tatianaTests: TatianaTest[] = [
         },
       ],
     },
+    writing: {
+      buildSentence: [
+        { id: 1, prompt: "I can't believe how hot it is today.", scrambled: "degrees/is/many/it/how/ outside today", answer: "How many degrees is it outside today?" },
+        { id: 2, prompt: "You are going to the bookstore this afternoon, right?", scrambled: "want/you/me / you anything/do/ to get", answer: "Do you want me to get you anything?" },
+        { id: 3, prompt: "Did you hear the news about Tom?", scrambled: "he/a new/got/city/in the / job", answer: "He got a new job in the city." },
+        { id: 4, prompt: "I'm thinking of redecorating my room.", scrambled: "colors are / what/you/choose / going to", answer: "What colors are you going to choose?" },
+        { id: 5, prompt: "I can't find my phone anywhere.", scrambled: "last/ the /table/saw/1/kitchen", answer: "I saw it on the kitchen table last." },
+        { id: 6, prompt: "I'm so tired after work.", scrambled: "take/nap/you/a/should / maybe / little", answer: "Maybe you should take a little nap." },
+        { id: 7, prompt: "I really liked the lecture this morning.", scrambled: "in/the/who/professor/was", answer: "Who was the professor?" },
+        { id: 8, prompt: "I might join the gym near campus.", scrambled: "any/members/ are / of /friends / your", answer: "Are any of your friends members already?" },
+        { id: 9, prompt: "My parents are visiting next week.", scrambled: "they/for/how/staying/are/long", answer: "How long are they staying?" },
+        { id: 10, prompt: "The bakery downtown just reopened.", scrambled: "bread / offering/ they/what/are/types / of", answer: "What types of bread are they offering?" },
+      ],
+      writeEmail: {
+        situation: "You are the president of your university's photography club. The club booked a guest speaker, but the speaker just canceled.",
+        task: ["Explain the situation.", "Apologize for the inconvenience.", "Suggest an alternative activity for the meeting."],
+        to: "Club Members",
+        subject: "Speaker Unable to Attend",
+        sampleAnswer: "Dear Club Members,\n\nI am writing to inform you that our guest speaker, who was scheduled to present at today's meeting, had to cancel at the last minute due to an unexpected personal issue.\n\nI sincerely apologize for any inconvenience this may cause and for the short notice.\n\nInstead of canceling the meeting, I suggest that we use this time for a group activity. We can review and discuss members' recent photos, share feedback, and exchange tips on composition and editing. I believe this will still be a valuable and engaging session for everyone.\n\nThank you for your understanding, and I hope to see you at the meeting.\n\nBest regards,\nLily White",
+      },
+      academicDiscussion: {
+        professorPrompt: "Many cities are investing in bike lanes to encourage cycling as a healthier and more environmentally friendly alternative to driving. Supporters argue that bike lanes reduce traffic, improve air quality, and promote exercise. Critics say they take up valuable road space and can cause accidents when cars and bikes mix. Do you think cities should continue to expand bike lane networks, or should they focus on other forms of transportation?",
+        student1: { name: "Mia", post: "I think cities should continue to expand bike lanes because cycling is one of the cleanest forms of transport. It reduces pollution and helps people improve their health at the same time." },
+        student2: { name: "Mike", post: "I don't think expanding bike lanes should be the priority for most cities. Not everyone is able or willing to cycle, especially in places with bad weather or long commuting distances. Bike lanes can also create traffic issues when roads are already crowded. Cities should invest more in public transport, which can benefit a larger number of people." },
+        sampleAnswer: "I agree that cities should continue to expand bike lanes, but they should do so carefully and as part of a broader transportation plan. As Mia mentioned, cycling is an environmentally friendly option that reduces pollution and encourages people to stay active. These benefits are especially important in large cities with serious traffic and air quality problems.\n\nHowever, I also understand Mike's concern that bike lanes may not work for everyone, particularly in areas with bad weather or long commuting distances. For this reason, I think cities should expand bike lanes mainly in central areas while also investing in reliable public transportation. This combined approach can help more people choose sustainable ways to travel.",
+      },
+    },
   },
   {
     testNumber: 2,
@@ -110,6 +162,33 @@ export const tatianaTests: TatianaTest[] = [
           sampleAnswer: "I think the growth of online learning will significantly change universities over the next 20 years. Universities will likely offer more hybrid and fully online programs to reach global students. Technology allows access to high-quality education without geographical limits. For example, many prestigious institutions already provide online degrees, and this trend will continue. Students may choose courses from multiple universities rather than attending one campus exclusively. This could make education more flexible, personalized, and inclusive, but universities will also need to focus on building community and collaboration online. Overall, online learning will expand opportunities while encouraging universities to innovate and adapt.",
         },
       ],
+    },
+    writing: {
+      buildSentence: [
+        { id: 1, prompt: "I'm worried about the math test tomorrow.", scrambled: "session/has/tonight/have/we/could/a study", answer: "We could have a study session tonight." },
+        { id: 2, prompt: "The café near the park has a great coffee.", scrambled: "there/ever/been / have / you / to", answer: "Have you ever been there?" },
+        { id: 3, prompt: "My cousin is getting married in July.", scrambled: "wedding/where/ the / held / is", answer: "Where is the wedding held?" },
+        { id: 4, prompt: "I lost my umbrella this morning.", scrambled: "could/one/store/go/you/get/to/at the", answer: "You could get another one at the store." },
+        { id: 5, prompt: "Our professor canceled class today.", scrambled: "a/meeting/an/ have / instead/we'll", answer: "We'll have an online meeting instead." },
+        { id: 6, prompt: "I'm looking for a part-time job.", scrambled: "apply/job/where/to/going/are/you", answer: "Where are you going to apply?" },
+        { id: 7, prompt: "My friend just moved into a new apartment.", scrambled: "he/much/how/rent/does/pay", answer: "How much rent does he pay?" },
+        { id: 8, prompt: "The concert tickets sold out fast.", scrambled: "another /think/concert/they will / you / have / when / do", answer: "When do you think they will have another concert?" },
+        { id: 9, prompt: "I need to print my assignment.", scrambled: "printers / the / on the / floor / second / are", answer: "The printers are on the second floor." },
+        { id: 10, prompt: "I really liked the restaurant we tried yesterday.", scrambled: "dish/favorite/your/was/what/there", answer: "What was your favorite dish there?" },
+      ],
+      writeEmail: {
+        situation: "You reserved a study room in the library, but when you arrived, it was already occupied.",
+        task: ["Describe the problem.", "Explain why you need the room.", "Ask for a solution."],
+        to: "Library staff",
+        subject: "Study Room Reservation",
+        sampleAnswer: "Dear Library Staff,\n\nI am writing to inform you of a problem with my study room reservation today. I reserved Room 204 from 2:00 to 4:00 p.m., but when I arrived, the room was already occupied by another group. They mentioned that they had been using it for some time, and there was no indication that the room had been reserved.\n\nI specifically booked this room because I have an important online meeting for a group project, and I need a quiet and private space to participate. Without access to the room, it is difficult for me to complete my work effectively.\n\nCould you please look into this matter and let me know if another room is available or if the reservation system can be checked?\n\nThank you for your assistance.\n\nBest regards,\nLily White",
+      },
+      academicDiscussion: {
+        professorPrompt: "Some countries have recently shortened the standard workweek to four days instead of five. Supporters say this leads to better work-life balance, higher productivity, and happier employees. Critics worry that it could harm businesses and reduce overall output. Do you think a four-day workweek is a good idea? Why or why not?",
+        student1: { name: "Lucy", post: "I think a four-day workweek is a great idea because people are more productive when they rest more. Working fewer but more focused days can improve results and give employees more time for family and relaxation." },
+        student2: { name: "Marshall", post: "I don't support a shorter workweek because some industries need constant attention. Paying the same salary for fewer hours could hurt businesses, and some employees might still work long, stressful days." },
+        sampleAnswer: "I agree with Lucy that a four-day workweek can increase productivity because employees are likely to feel more rested and motivated. When people have an extra day to relax or spend time with family, they may return to work with greater concentration and energy. In many office-based jobs, productivity depends more on focus and efficiency than on the number of hours spent at a desk. Therefore, fewer but more focused workdays could actually improve results.\n\nHowever, I also understand Marshall's concern that some industries require constant attention. Businesses such as healthcare or customer service cannot simply close for an extra day. In those cases, companies could introduce rotating schedules to maintain coverage.\n\nOverall, I believe the success of a four-day workweek depends on thoughtful planning and the specific needs of each industry.",
+      },
     },
   },
   {
@@ -152,6 +231,33 @@ export const tatianaTests: TatianaTest[] = [
         },
       ],
     },
+    writing: {
+      buildSentence: [
+        { id: 1, prompt: "The library closes early on Fridays.", scrambled: "its/on/what/hours / Saturday / opening/about", answer: "What about its opening hours on Saturdays?" },
+        { id: 2, prompt: "I can't wait for the weekend.", scrambled: "planning/been / want/have / you / something", answer: "Have you been planning something?" },
+        { id: 3, prompt: "I need to call the dentist today.", scrambled: "to/need/appointment/you/where/do/an/make", answer: "Do you need to make an appointment?" },
+        { id: 4, prompt: "The enrollment for the AI course just opened.", scrambled: "it would / you / a good/join/to/do/think/ be / idea", answer: "Do you think it would be a good idea to join?" },
+        { id: 5, prompt: "I'm reading an interesting article on cognitive bias right now.", scrambled: "share/me/you/with/could / link", answer: "Could you share the link with me?" },
+        { id: 6, prompt: "I'm so tired this morning.", scrambled: "late/stay/when / did / yesterday/up/you", answer: "Did you stay up late yesterday?" },
+        { id: 7, prompt: "I saw Emily at the warehouse yesterday.", scrambled: "was/her/there/she/doing / what", answer: "What was she doing there?" },
+        { id: 8, prompt: "We have to do the shopping this afternoon.", scrambled: "would / you / went / after 6:00 p.m. / it work/for/we/if", answer: "Would it work for you if we went after 6:00 pm?" },
+        { id: 9, prompt: "I need to clean my room today.", scrambled: "an hour / to clean / at least / think / everything/ will need/1/you", answer: "I think you will need at least an hour to clean everything." },
+        { id: 10, prompt: "I'm really hungry right now.", scrambled: "place/a/around / you/good/do/here / know", answer: "Do you know a good place around here?" },
+      ],
+      writeEmail: {
+        situation: "Your professor has offered extra credit opportunities.",
+        task: ["Ask for details about the extra credit.", "Explain why you are interested.", "Confirm how to submit the work."],
+        to: "Professor Green",
+        subject: "Extra Credit Opportunity",
+        sampleAnswer: "Dear Professor Green,\n\nI hope you are doing well. I am writing to ask for more details about the extra credit opportunities you mentioned in class.\n\nI am very interested in this option because I want to deepen my understanding of the course material and improve my overall performance. I have found the topics we are studying especially engaging, and I would be happy to put in extra effort to learn more and strengthen my skills.\n\nCould you please let me know what the extra credit assignment involves and what the expectations are? I would also like to confirm how the work should be submitted and whether there is a specific deadline or format I should follow.\n\nThank you very much for offering this opportunity and for your time. I look forward to your guidance.\n\nSincerely,\nLily White",
+      },
+      academicDiscussion: {
+        professorPrompt: "Some governments offer financial incentives for families to have more children because of aging populations. Supporters argue this helps balance society and ensures enough workers in the future. Critics say it puts pressure on families and doesn't address deeper social issues. Should governments encourage larger families?",
+        student1: { name: "Maya", post: "I think governments should encourage larger families because declining birth rates threaten economies. Incentives like childcare support and housing benefits can make family life easier and ensure long-term stability." },
+        student2: { name: "Stan", post: "I don't think encouraging larger families is the best solution. High costs, lack of support, and career pressures stop people from having children. Governments should improve working conditions and gender equality instead." },
+        sampleAnswer: "I think governments should be careful about encouraging larger families because money incentives alone do not solve the main problems that stop people from having children. For example, long working hours, unstable jobs, and limited childcare make family life difficult and stressful for many parents.\n\nStan mentioned that better working conditions and gender equality are more important, and I understand why he believes this is a stronger solution. I agree with him, but I also think Maya's idea has some value because incentives can help when they are combined with real support. Overall, governments should create secure conditions first, and use incentives only as additional support.",
+      },
+    },
   },
   {
     testNumber: 4,
@@ -192,6 +298,33 @@ export const tatianaTests: TatianaTest[] = [
           sampleAnswer: "Governments could encourage healthier lifestyles by making healthy choices easier and more appealing. For example, they could improve public spaces with more parks, walking paths, and bike lanes, which promote physical activity. Subsidizing fruits and vegetables or taxing sugary drinks could make healthier diets more affordable and accessible. Public campaigns that raise awareness about the benefits of exercise, good sleep, and mental well-being can also motivate people. Schools and workplaces could be supported with wellness programs and incentives to stay active. By combining education, accessible infrastructure, and financial incentives, governments can create an environment where healthy choices feel natural and achievable for everyone.",
         },
       ],
+    },
+    writing: {
+      buildSentence: [
+        { id: 1, prompt: "Why haven't you finished the report?", scrambled: "missing/data/still/is/some / you", answer: "Some data is still missing." },
+        { id: 2, prompt: "A few important tasks were not completed on time.", scrambled: "this/is/for/ delay / responsible / who/does / of", answer: "Who is responsible for this delay?" },
+        { id: 3, prompt: "I invited Anna to visit us.", scrambled: "she / would/she/come/ say / when", answer: "When did she say she would come?" },
+        { id: 4, prompt: "Should we follow up on this request?", scrambled: "response/if/ a good idea /that/no/received / been / has / is", answer: "That is a good idea if no response has been received." },
+        { id: 5, prompt: "Why is this product cheaper?", scrambled: "was released / features than / has/ the / last year / it /that/one/fewer", answer: "It has fewer features than the one that was released last year." },
+        { id: 6, prompt: "The professor is offering a new course next semester.", scrambled: "explain / requires / the/what/course/next/skills / you / could", answer: "Could you explain what skills the course requires?" },
+        { id: 7, prompt: "Does Helen already know her results?", scrambled: "excellent / received / assignment/feedback/she/submitted / that / the", answer: "Yes, the assignment that she submitted received excellent feedback." },
+        { id: 8, prompt: "What was he told to do?", scrambled: "reduce / intake/that/his/suggested/doctor/he/sugar / the", answer: "The doctor suggested that he reduce his sugar intake." },
+        { id: 9, prompt: "Why do you look so upset?", scrambled: "already / bought/laptop/1/that/malfunctioning/is/ last year / the", answer: "The laptop that I bought last year is already malfunctioning." },
+        { id: 10, prompt: "How did he react when you showed him the findings?", scrambled: "trusted/ wondered / results / be/ could / the/he/whether", answer: "He wondered whether the results could be trusted." },
+      ],
+      writeEmail: {
+        situation: "You borrowed a textbook from your classmate, Mia, but accidentally spilled coffee on it while you were having lunch at the cafeteria.",
+        task: ["Explain what happened.", "Offer to replace or repair the book.", "Apologize for the inconvenience."],
+        to: "Mia",
+        subject: "Apology about the textbook",
+        sampleAnswer: "Hi Mia,\n\nI hope you are doing well. I am really sorry to tell you that I spilled coffee on the textbook you lent me while I was having lunch at the cafeteria today. It was an accident, but I still feel very bad because I should have been more careful with your book.\n\nI sincerely apologize for any inconvenience this may cause you. I will gladly replace the textbook with a new copy or cover the cost of any repairs, depending on what you prefer. Please let me know which option works best for you.\n\nThank you for your understanding, and I am truly sorry again.\n\nBest regards,\nLily White",
+      },
+      academicDiscussion: {
+        professorPrompt: "Our topic today is personal identity. Some philosophers argue that identity is stable and continuous over time, meaning that a person remains essentially the same despite changes in circumstances. Others claim that identity constantly evolves due to experiences, relationships, culture, and social influences. Considering these perspectives, would you say identity is fixed or flexible?",
+        student1: { name: "Taylor", post: "I believe identity is flexible because people gradually change their beliefs, values, and behaviors as they gain new experiences and interact with different environments. Over time, relationships, education, and challenges reshape how individuals see themselves." },
+        student2: { name: "Jean", post: "I think there is a stable core personality that remains consistent despite external changes and new experiences. Although people may adapt their behavior to different situations, their fundamental traits and basic character tend to stay the same." },
+        sampleAnswer: "I believe personal identity is largely flexible, although it may include some stable elements. As Taylor suggests, people gradually change their beliefs, values, and behaviors as they gain new experiences and encounter different environments. Education, relationships, and significant life challenges often reshape how individuals perceive themselves. For instance, someone who once considered themselves indecisive may become confident after assuming leadership roles or successfully overcoming adversity.\n\nAt the same time, I understand Jean's point that certain core traits remain relatively consistent. Qualities like introversion or optimism may persist across situations. However, even these traits can be expressed differently depending on social and cultural contexts. Therefore, identity is not fixed but continuously evolving through reflection and experience.",
+      },
     },
   },
   {
@@ -234,6 +367,33 @@ export const tatianaTests: TatianaTest[] = [
         },
       ],
     },
+    writing: {
+      buildSentence: [
+        { id: 1, prompt: "I'm thinking about applying for a scholarship next semester.", scrambled: "are/what/you/know/requirements / the/do", answer: "Do you know what the requirements are?" },
+        { id: 2, prompt: "I need to improve my writing skills for the upcoming exam.", scrambled: "resources/any/to/you/recommend/me/like/would", answer: "Would you like me to recommend any resources?" },
+        { id: 3, prompt: "I couldn't attend the webinar because my internet stopped working.", scrambled: "if / available / the recording/check/me/ is / let", answer: "Let me check if the recording is available." },
+        { id: 4, prompt: "The apartment that we wanted to rent was taken by someone else.", scrambled: "check / available / if / are / did/ still / other options / there / you", answer: "Did you check if there are still other options available?" },
+        { id: 5, prompt: "The scientist who led the study presented the results at the conference.", scrambled: "show/where/ can/find/we/the/full/ report", answer: "Where can we find the full published report?" },
+        { id: 6, prompt: "The stocks grew by 5% yesterday.", scrambled: "we/or/now/whether/invest / we should/to/wait/ decide / need", answer: "We need to decide whether we should invest now or wait." },
+        { id: 7, prompt: "The book that you recommended turned out to be extremely insightful.", scrambled: "helpful/you/which/most/part/ the book/did/ of /find", answer: "Which part of the book did you find most helpful?" },
+        { id: 8, prompt: "The committee finally approved the proposal.", scrambled: "were/you/summarize/points/that/discussed / the main / during the meeting", answer: "Please summarize the main points that were discussed during the meeting." },
+        { id: 9, prompt: "The report was finally published.", scrambled: "the/highlight/findings / you / are / most/which/significant / could", answer: "Could you highlight which findings are the most significant?" },
+        { id: 10, prompt: "What did the experts say?", scrambled: "for/a/experiment / different/strategy / recommended / the / they / trying", answer: "They recommended trying a different strategy for the experiment." },
+      ],
+      writeEmail: {
+        situation: "You are interested in enrolling in a course next semester, but the course description on the university website is unclear and does not provide enough details about requirements and workload.",
+        task: ["Explain why you are interested in the course.", "Ask specific questions about requirements and expectations.", "Request additional information to help you decide."],
+        to: "Academic Advisor",
+        subject: "Request for course information",
+        sampleAnswer: "Dear Academic Advisor,\n\nI hope you are doing well. I am interested in enrolling in one of the courses offered next semester because it closely aligns with my academic goals and would help me strengthen my knowledge in this field. However, I found the course description on the university website somewhat unclear.\n\nCould you please provide more details about the course requirements, such as prerequisites, assessment methods, and weekly workload? I would also like to know how much independent study is expected and whether there are any major projects or exams.\n\nAny additional information or guidance would be greatly appreciated, as it will help me make an informed decision.\n\nThank you for your time and assistance.\n\nBest regards,\nLily White",
+      },
+      academicDiscussion: {
+        professorPrompt: "Psychologists continue to debate whether intelligence is largely determined by genetic factors or whether it can significantly improve through sustained effort, effective education, and enriched environments. In your view, is intelligence mostly fixed at birth, or can it meaningfully develop over time?",
+        student1: { name: "Mina", post: "I think intelligence can improve with consistent effort because practice, challenging tasks, and quality education gradually strengthen cognitive skills. When individuals actively engage in learning and problem-solving, they can expand their abilities beyond what they initially believed possible." },
+        student2: { name: "Carlos", post: "I believe genetics set relatively clear limits on intelligence, even if effort and education can help to some extent. While practice may refine certain skills, a person's overall intellectual capacity is largely influenced by inherited biological factors." },
+        sampleAnswer: "I believe intelligence can meaningfully develop over time, although genetics may set an initial range. I agree with Mina that consistent effort, challenging tasks, and high-quality education can gradually strengthen cognitive skills. For example, when individuals regularly practice problem-solving or learn new concepts, they build neural connections that support better reasoning and memory.\n\nAt the same time, Carlos makes a valid point that biological factors may influence one's starting point. However, I think these limits are not as fixed as they seem. Many people exceed expectations through persistence and effective learning strategies.\n\nIn my view, intelligence is not purely fixed or flexible, but a combination of both. With the right environment and sustained effort, individuals can significantly improve their abilities over time.",
+      },
+    },
   },
   {
     testNumber: 6,
@@ -274,6 +434,33 @@ export const tatianaTests: TatianaTest[] = [
           sampleAnswer: "Volunteer work benefits the community by providing support, resources, and companionship to those in need, but it also benefits the volunteers personally. For instance, while helping at a local animal shelter, I developed time management, teamwork, and communication skills. I also gained a better understanding of social and community issues, which increased my empathy and awareness. Volunteers often feel a sense of fulfillment and confidence from making a difference, and these experiences can strengthen problem-solving abilities and leadership skills. In short, volunteering creates a positive cycle: the community receives help, and volunteers grow personally, socially, and professionally, making it a mutually rewarding experience.",
         },
       ],
+    },
+    writing: {
+      buildSentence: [
+        { id: 1, prompt: "Her presentation was impressive and extremely well-structured.", scrambled: "very/prepared / clearly / she / was", answer: "Clearly, she was very prepared." },
+        { id: 2, prompt: "The meeting ended much later than scheduled.", scrambled: "expect/didn't/to/so/1/last/it/long", answer: "I didn't expect it to last so long." },
+        { id: 3, prompt: "The company plans to introduce a new policy next quarter.", scrambled: "affected/be/will/ employees / how", answer: "How will employees be affected?" },
+        { id: 4, prompt: "I'm not sure if I understood the requirements for this assignment correctly.", scrambled: "you/suggest/ this issue / your instructor/about/speak/1/with", answer: "I suggest you speak with your instructor about this issue." },
+        { id: 5, prompt: "The software update includes several new security features.", scrambled: "protecting/users/these/ protect / features / help / explain / how", answer: "Please explain how these features help protect users." },
+        { id: 6, prompt: "We need to finish the group project before the deadline.", scrambled: "tasks/how/to/ divide / decide / should / the / we", answer: "We should decide how to divide the tasks." },
+        { id: 7, prompt: "Where will we meet to work on our group project today?", scrambled: "today/ café / early / closes / the / usually/where/we/ study", answer: "The café where we usually study closes early today." },
+        { id: 8, prompt: "Why is it taking so long?", scrambled: "whether / discussing / effective / will / they / the new policy / are / be", answer: "They are discussing whether the new policy will be effective." },
+        { id: 9, prompt: "A new documentary about global education systems was released last month.", scrambled: "available / streaming platforms/any/is/on/if/it/know/ you/ do", answer: "Do you know if it is available on any streaming platforms?" },
+        { id: 10, prompt: "Do you know anyone here?", scrambled: "is/very/famous engineer /a/woman/wearing/ the/ a blue dress", answer: "The woman wearing a blue dress is a very famous engineer." },
+      ],
+      writeEmail: {
+        situation: "Your campus café increased its prices. Many students are now discussing the higher prices and expressing concerns about affordability.",
+        task: ["Describe the problem.", "Share student opinions.", "Suggest possible solutions."],
+        to: "Student Council",
+        subject: "Concern about price increase",
+        sampleAnswer: "Dear Student Council Members,\n\nI am writing to share concerns about the recent price increase at the campus café. Because it is a convenient place for students to buy meals between classes, many students feel the higher prices are no longer affordable. Some students say they may skip meals or leave campus to find cheaper food, which is difficult during short breaks.\n\nStudents have suggested possible solutions, such as offering student discounts, adding lower-cost meal options, or providing daily specials at reduced prices. These steps could make food more accessible while supporting the café's operation.\n\nThank you for your attention to this matter.\n\nSincerely,\nLily White",
+      },
+      academicDiscussion: {
+        professorPrompt: "Philosophers have long debated the primary purpose of education. Some argue that education should mainly prepare individuals for the workforce and economic productivity, while others believe its central goal is to cultivate critical thinking, ethical awareness, and personal development. Which purpose of education do you consider more important?",
+        student1: { name: "Aisha", post: "Education should prioritize critical thinking because this skill is valuable in every aspect of life. Individuals who think critically can solve problems, evaluate information carefully, and adapt successfully to changing circumstances." },
+        student2: { name: "David", post: "I believe preparing students for employment is more important since financial stability strongly influences quality of life. Education that develops practical skills helps individuals secure jobs, achieve independence, and contribute productively to society." },
+        sampleAnswer: "I agree with Aisha's view that education should prioritize critical thinking. One important reason is that this skill helps individuals analyze information carefully, which can prevent them from making poor decisions based on misinformation. Moreover, critical thinking encourages adaptability, making people better prepared to face unexpected challenges in both personal and professional life.\n\nWhile David suggests that preparing students for employment is more important, this perspective may be less convincing because job-specific skills can become outdated quickly. For example, technical abilities learned in school may no longer be useful as industries change.\n\nUltimately, although employment preparation is valuable, developing strong critical thinking skills provides a foundation that supports lifelong learning, responsible decision-making, and success in many different situations.",
+      },
     },
   },
   {
@@ -316,6 +503,33 @@ export const tatianaTests: TatianaTest[] = [
         },
       ],
     },
+    writing: {
+      buildSentence: [
+        { id: 1, prompt: "I don't know what brushes to buy for our art project.", scrambled: "buy/will/you/whichever/work", answer: "Whichever you buy will work." },
+        { id: 2, prompt: "What are we waiting for?", scrambled: "start / everyone / joins/can't / unless/meeting/ we the", answer: "We can't start the meeting unless everyone joins." },
+        { id: 3, prompt: "Is going to sleep on time that important?", scrambled: "sleep/improves/getting/enough/concentration", answer: "Getting enough sleep improves concentration." },
+        { id: 4, prompt: "The deadlines are too short.", scrambled: "under/anxiety / can/increase/working/time/ pressure", answer: "Working under time pressure can increase anxiety." },
+        { id: 5, prompt: "What were you talking about with Lucy?", scrambled: "whether/additional/asked/materials/she/we/needed", answer: "She asked whether we needed additional materials." },
+        { id: 6, prompt: "The professor explained the concept again during the lecture today.", scrambled: "for clarification / and asked / because / didn't/ fully understand / that's/1/it", answer: "That's because I didn't fully understand it and asked for clarification." },
+        { id: 7, prompt: "Is the meeting already over?", scrambled: "continuing/short break / before/taking/suggested/ the/a/ speaker", answer: "The speaker suggested taking a short break before continuing." },
+        { id: 8, prompt: "It looks like it is going to rain.", scrambled: "be/improves / outdoor event / the weather / unless / will / canceled / the", answer: "Unless the weather improves, the outdoor event will be canceled." },
+        { id: 9, prompt: "What materials did you use to prepare for the test?", scrambled: "the/recommended/were/ the resources / very helpful / professor/ by", answer: "The resources recommended by the professor were very helpful." },
+        { id: 10, prompt: "I'll take the exam tomorrow.", scrambled: "before/review/ you / the test / your notes/that/recommend / I", answer: "I recommend that you review your notes before the test." },
+      ],
+      writeEmail: {
+        situation: "You recently started an internship, but you discovered that the assigned working hours conflict with one of your required university classes.",
+        task: ["Explain the scheduling conflict.", "Describe why both the internship and the class are important to you.", "Request a possible adjustment to your schedule."],
+        to: "Internship Supervisor",
+        subject: "Request for schedule adjustment",
+        sampleAnswer: "Dear Internship Supervisor,\n\nI am writing to see if I could make a small change to my work schedule. I recently found out that my assigned internship hours conflict with a required university class.\n\nThis class is mandatory for me to graduate this semester, so I cannot miss it. At the same time, this internship is also extremely important because it allows me to gain practical experience in software development and prepare for my future career.\n\nCould I possibly shift my Tuesday hours to Thursday afternoon instead? This adjustment would allow me to attend my class while continuing to complete all of my internship responsibilities.\n\nThank you for your understanding.\n\nBest regards,\nLily White",
+      },
+      academicDiscussion: {
+        professorPrompt: "Music is often described as a universal language. It can bring people together across cultures and generations. However, some argue that music styles are so different that they don't always connect people. Do you think music truly unites people, or are cultural differences too strong?",
+        student1: { name: "Carolina", post: "I think music unites people because emotions are universal. Even without understanding the words, people can feel the rhythm, and events like concerts show how music brings different backgrounds together." },
+        student2: { name: "David", post: "I believe music does not always unite people because cultural and generational differences affect how it is perceived. Some styles may feel unfamiliar, so music can also highlight differences." },
+        sampleAnswer: "I agree with Carolina's view that music truly unites people despite their backgrounds. One important reason is that melodies convey raw emotions, which can instantly connect individuals without any language barriers. Moreover, shared musical experiences foster a strong sense of community, making cultural differences feel entirely irrelevant.\n\nWhile David suggests that unfamiliar musical styles might highlight generational or cultural divides, this perspective may be less convincing because exposure naturally breeds appreciation. For example, the global rise of K-pop shows that millions of listeners actively embrace unfamiliar languages and foreign beats.\n\nUltimately, although distinct musical traditions undeniably exist, the universal emotional impact of a good melody ensures that music brings us together rather than driving us apart.",
+      },
+    },
   },
   {
     testNumber: 8,
@@ -356,6 +570,33 @@ export const tatianaTests: TatianaTest[] = [
           sampleAnswer: "I agree that taking a gap year to travel can be very beneficial for students, especially before starting university. First of all, it allows them to gain real-world experience and become more independent. For example, they learn how to manage money, plan trips, and adapt to new environments. In addition, traveling exposes them to different cultures, which can broaden their perspective and help them grow as individuals. However, I think it depends on the person. Some students may lose focus or feel unmotivated to continue their studies afterward. Therefore, if the gap year is well-planned and has a clear purpose, it can be a very valuable and life-changing experience.",
         },
       ],
+    },
+    writing: {
+      buildSentence: [
+        { id: 1, prompt: "I'm thinking about joining a gym.", scrambled: "membership plans / which / know / offered / are being/do/you", answer: "Do you know which membership plans are being offered?" },
+        { id: 2, prompt: "My phone battery keeps dying quickly.", scrambled: "using/have/ the charger/ that came / you tried / with the device", answer: "Have you tried using the charger that came with the device?" },
+        { id: 3, prompt: "I'm considering taking online yoga classes.", scrambled: "benefits / practicing/hoping/what/to get / are you / from regularly?", answer: "What benefits are you hoping to get from practicing regularly?" },
+        { id: 4, prompt: "I spilled coffee on my keyboard this morning.", scrambled: "checked by / a technician / yet/been/has/it/having", answer: "Has it been checked by a technician yet?" },
+        { id: 5, prompt: "I'm planning to redecorate my apartment.", scrambled: "look/colors/bigger/the room / would make / which", answer: "Which colors would make the room look bigger?" },
+        { id: 6, prompt: "My neighbor just adopted a puppy.", scrambled: "breed/know/do/what/stay/ is/it/you", answer: "Do you know what breed it is?" },
+        { id: 7, prompt: "I've been having trouble sleeping lately.", scrambled: "fall/ faster / helps/asleep/what/you usually", answer: "What usually helps you fall asleep faster?" },
+        { id: 8, prompt: "I need to renew my passport soon.", scrambled: "appointments / whether / know / are booked / far in advance / do/you", answer: "Do you know whether appointments are booked far in advance?" },
+        { id: 9, prompt: "I'm trying to reduce my screen time.", scrambled: "checking/managing/are / your phone / to avoid / how/you", answer: "How are you managing to avoid checking your phone?" },
+        { id: 10, prompt: "My package still hasn't arrived.", scrambled: "the company/contacted / shipped it / you / have / that", answer: "Have you contacted the company that shipped it?" },
+      ],
+      writeEmail: {
+        situation: "You signed up for a weekend photography workshop offered by a community center. However, you received two emails with different starting times for the class, and you are unsure which one is correct.",
+        task: ["Explain the conflicting information you received.", "Mention why confirming the schedule is important for you.", "Ask which starting time is correct and whether updated details will be sent."],
+        to: "Workshop Coordinator",
+        subject: "Question about start time",
+        sampleAnswer: "Dear Workshop Coordinator,\n\nI am really looking forward to attending the upcoming weekend photography workshop at the community center. However, I recently received two separate registration emails that show conflicting starting times for the class, so I am quite unsure which one is correct.\n\nConfirming the exact schedule is very important to me because I need to arrange my family commitments and transportation in advance. Could you please clarify which starting time is actually the right one? Also, will an updated schedule with the final details be sent out to everyone?\n\nThank you very much for your help.\n\nBest regards,\nLily White",
+      },
+      academicDiscussion: {
+        professorPrompt: "Competition is common in education through grades, rankings, and awards. Some educators argue that competition motivates students to work harder and improve performance. Others believe excessive competition increases stress and discourages collaboration. Does competition in education help students more than it harms them? Why?",
+        student1: { name: "Robin", post: "I think competition helps students because it creates motivation and encourages effort. Many students perform better when they have clear goals and want to achieve strong results. Competition can also prepare people for real-world environments where performance matters. I believe moderate competition can be healthy." },
+        student2: { name: "Jordan", post: "In my opinion, competition can harm students more than it helps. Too much pressure may increase anxiety and make students focus only on outperforming others. This can reduce collaboration and enjoyment of learning. I believe that education should emphasize growth rather than constant comparison." },
+        sampleAnswer: "I agree with Robin's view that moderate classroom competition genuinely benefits students. One important reason is that aiming for top rankings encourages consistent daily effort, which can dramatically boost a student's final academic performance. Moreover, overcoming these educational challenges effectively prepares young people for highly competitive real-world career environments, making them far more resilient and capable adults.\n\nWhile Jordan suggests that classroom contests increase severe anxiety, this perspective may be less convincing because well-structured challenges emphasize personal development over negative comparison. For example, school spelling bees or science fairs typically inspire participants to master difficult concepts alongside supportive peers.\n\nUltimately, although excessive pressure can sometimes cause mental fatigue, balanced academic competition effectively drives essential self-improvement.",
+      },
     },
   },
   {
@@ -398,6 +639,33 @@ export const tatianaTests: TatianaTest[] = [
         },
       ],
     },
+    writing: {
+      buildSentence: [
+        { id: 1, prompt: "I'm learning how to cook Thai food.", scrambled: "making first / interested in / dishes / which / you / are", answer: "Which dishes are you interested in making first?" },
+        { id: 2, prompt: "The washing machine stopped working again.", scrambled: "do/repaired/know/can be /it/if/you", answer: "Do you know if it can be repaired?" },
+        { id: 3, prompt: "I'm thinking of switching banks.", scrambled: "a new account / what features / looking for/are/in/you", answer: "What features are you looking for in a new account?" },
+        { id: 4, prompt: "My friend invited me to a wedding next month.", scrambled: "be wearing/you'll / have / what/decided / he / you", answer: "Have you decided what you'll be wearing?" },
+        { id: 5, prompt: "I've started listening to podcasts during walks.", scrambled: "people talk/topics/ enjoy hearing / do you/what/about", answer: "What topics do you enjoy hearing people talk about?" },
+        { id: 6, prompt: "My friend moved to another country last month.", scrambled: "teaches people / become / living abroad / often / more independent/to", answer: "Living abroad often teaches people to become more independent." },
+        { id: 7, prompt: "I can see you are still worried about missing the train tomorrow.", scrambled: "changed/can / whether/check/ the schedule / has been / you", answer: "Can you check whether the schedule has been changed?" },
+        { id: 8, prompt: "The café near my office closed suddenly.", scrambled: "was/know/it/shut down/do/why/you/office", answer: "Do you know why it was shut down?" },
+        { id: 9, prompt: "I'm planning to sell some old furniture.", scrambled: "where / easiest / you think / it /do/ to find buyers / would be", answer: "Where do you think it would be easiest to find buyers?" },
+        { id: 10, prompt: "I haven't received a reply to my email yet.", scrambled: "been/ the message/not/may/yet/ have / seen /", answer: "The message may not have been seen yet." },
+      ],
+      writeEmail: {
+        situation: "You borrowed equipment from your university's media center for a class project and returned the equipment on time. However, this morning, you received a notification that a late-return fee has been added to your account.",
+        task: ["Describe the fee notification you received.", "Explain when and how you returned the equipment.", "Request a review of the charge and clarification of the records."],
+        to: "mediacenter@greenhilluniversity.edu",
+        subject: "Late Fee Question",
+        sampleAnswer: "Dear Media Center Staff,\n\nI am writing because I received an automated notification this morning stating that a late fee was added to my account. However, I believe there has been a misunderstanding. I borrowed some video equipment for a class project and returned everything on time on Friday afternoon by handing it directly to the front desk clerk.\n\nCould you please review my charge and clarify your system's records? I would greatly appreciate it if you could look into this error and remove the fee.\n\nThank you very much for your time and help.\n\nBest regards,\nAlex Williams",
+      },
+      academicDiscussion: {
+        professorPrompt: "Many famous tourist destinations are experiencing problems caused by large numbers of visitors. Overcrowding can damage historical sites, increase pollution, and make life more difficult for local residents. Should governments place restrictions on tourism in popular destinations?",
+        student1: { name: "Deseree", post: "I support limiting tourism because excessive numbers of visitors can seriously damage local environments and historical sites. Residents may also face higher living costs and overcrowded public spaces. Protecting these places is important so future generations can continue enjoying them." },
+        student2: { name: "Mark", post: "I disagree because tourism is an important source of income for many communities. Hotels, restaurants, and local businesses depend heavily on visitors. Restricting tourism could reduce employment opportunities and negatively affect the local economy." },
+        sampleAnswer: "I agree with Deseree's view that governments should place strict limits on tourism in popular destinations. One important reason is that managing crowd sizes reduces structural wear on historical landmarks, which can preserve invaluable cultural heritage for future generations. Moreover, capping visitor numbers lowers the heavy pressure on public infrastructure, making daily life much more comfortable and affordable for local residents.\n\nWhile Mark suggests that restricting tourism could harm local economies by reducing job opportunities, this perspective may be less convincing because uncontrolled overcrowding eventually destroys the unique attractions that draw visitors in the first place. For example, several famous tropical beaches have faced complete closures due to severe pollution, leaving local businesses with zero customers.\n\nUltimately, although tourism provides vital short-term revenue, limiting visitor numbers is necessary to ensure long-term sustainability.",
+      },
+    },
   },
   {
     testNumber: 10,
@@ -438,6 +706,33 @@ export const tatianaTests: TatianaTest[] = [
           sampleAnswer: "I strongly agree that schools should teach students about nutrition and healthy eating. In my opinion, learning how to fuel your body is a fundamental life skill, just like financial literacy or basic math. First of all, establishing healthy habits at a young age is crucial. Children who learn the value of a balanced diet early on are much more likely to carry those nutritious choices into adulthood, which helps prevent long-term health issues like obesity or diabetes. Furthermore, we live in a world filled with processed foods and confusing marketing. School lessons can provide students with the critical thinking skills they need to understand food labels and make informed decisions. Ultimately, incorporating nutrition into the curriculum empowers the next generation to take control of their own health.",
         },
       ],
+    },
+    writing: {
+      buildSentence: [
+        { id: 1, prompt: "My internet connection has been unstable all week.", scrambled: "reported / the issue / has / your provider / to / been", answer: "Has the issue been reported to your provider?" },
+        { id: 2, prompt: "I'm thinking about volunteering on weekends.", scrambled: "kind/what/work/enjoy doing/ you / of / would", answer: "What kind of work would you enjoy doing?" },
+        { id: 3, prompt: "I accidentally deleted an important file.", scrambled: "recycle / still be / stored / bin / in the / might / the document", answer: "The document might still be stored in the recycle bin." },
+        { id: 4, prompt: "I'm planning a trip to Japan next year.", scrambled: "visit/ have / want to / which cities / you / you decided", answer: "Have you decided which cities you want to visit?" },
+        { id: 5, prompt: "I heard that Emma quit her job.", scrambled: "why/know/leave/to/decided / do/ she / you", answer: "Do you know why she decided to leave?" },
+        { id: 6, prompt: "The meeting was canceled this morning.", scrambled: "that/who/know/decision/do/made/you", answer: "Do you know who made that decision?" },
+        { id: 7, prompt: "I'm trying to choose a topic for my research paper.", scrambled: "writing/interested/subjects/are/about/what/in/you", answer: "What subjects are you interested in writing about?" },
+        { id: 8, prompt: "My package still hasn't arrived.", scrambled: "company/contacted/shipped/have/the/that/you/it", answer: "Have you contacted the company that shipped it?" },
+        { id: 9, prompt: "I'm thinking about taking a gap year after university.", scrambled: "to gain / opportunity / sounds like / some / a good / that / life experience", answer: "That sounds like a good opportunity to gain some life experience." },
+        { id: 10, prompt: "I'm considering applying for a scholarship.", scrambled: "accepted / usually increases / your chances / of being/applying early", answer: "Applying early usually increases your chances of being accepted." },
+      ],
+      writeEmail: {
+        situation: "Your friend Sophie recently adopted a cat from a local animal shelter. You have not spoken to her for several weeks, and you are curious about the cat's personality and whether having a pet has changed her daily routine.",
+        task: ["Ask about the cat's personality and behavior.", "Ask how your friend is adjusting to pet ownership.", "Suggest meeting soon so you can see the cat."],
+        to: "sophie.miller89@gmail.com",
+        subject: "Your New Cat",
+        sampleAnswer: "Hi Sophie,\n\nI hope you are doing well! It has been a few weeks since we last caught up, and I was just thinking about your new cat from the shelter.\n\nI would love to know how everything is going. What is the cat's personality like? Is it super playful and energetic, or more relaxed and shy? Also, how are you adjusting to having a pet around? Has pet ownership changed your daily routine much?\n\nLet's get together sometime this weekend so I can finally meet your new companion. Let me know what day works best for you!\n\nBest,\nGina",
+      },
+      academicDiscussion: {
+        professorPrompt: "In many countries, people are using digital payment methods more frequently than cash. Supporters of a cashless society argue that electronic payments are faster, safer, and more convenient. However, others believe cash should remain important because not everyone has equal access to technology, and digital systems can fail. Should societies move toward becoming mostly cashless?",
+        student1: { name: "Andrea", post: "I support digital payments because they make everyday transactions much more convenient. People no longer need to carry large amounts of money, and payments can be completed almost instantly. Digital systems also make it easier to track spending and reduce certain types of crime." },
+        student2: { name: "Joshua", post: "I think cash should continue to play an important role. Some people, especially older adults, may struggle with digital technology. In addition, technical problems or power outages could prevent people from accessing their money when they need it." },
+        sampleAnswer: "I agree with Andrea's view that societies should transition toward becoming mostly cashless. One important reason is that electronic transactions streamline daily financial activities, which can save individuals and businesses significant time. Moreover, digital payment apps automatically record every purchase, making budgeting and tracking expenses effortless for everyday consumers.\n\nWhile Joshua suggests that physical currency remains necessary for tech-averse individuals and during unexpected system outages, this perspective may be less convincing because modern digital payment infrastructure is becoming exceptionally reliable and user-friendly. For example, simple tap-to-pay cards and smartphone apps now allow elderly users to complete transactions in seconds without navigating complex menus.\n\nUltimately, although maintaining emergency cash backups offers temporary convenience during technical glitches, adopting a cashless system provides far greater efficiency and long-term security.",
+      },
     },
   },
   {
@@ -481,4 +776,5 @@ export const tatianaTests: TatianaTest[] = [
       ],
     },
   },
+  // Writing data is only for tests 1–10; test 11 is speaking-only
 ];
