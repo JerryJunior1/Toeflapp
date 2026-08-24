@@ -217,6 +217,16 @@ export default function SideNavBar({
                     <span className="text-[14px]">Academic Discussion</span>
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/tatiana/writing/templates"
+                    className={getLinkClasses('/tatiana/writing/templates')}
+                    onClick={closeSidebar}
+                  >
+                    <span className="material-symbols-outlined text-[18px]">menu_book</span>
+                    <span className="text-[14px]">Templates & Tips</span>
+                  </Link>
+                </li>
               </ul>
             </li>
           </ul>
