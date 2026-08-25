@@ -165,33 +165,15 @@ Score: 0 - No response, completely unintelligible, or no English content related
       `;
     }
 
-    // 4. AI Invocation with Fallback Logic
+    // 4. Transcribe audio via Whisper FIRST (always), then grade with Gemini
     let text = "";
+    let whisperTranscript: string | null = null;
 
-    try {
-      // PRIMARY: Attempt Gemini
-      let generateContentPayload: any = gradingPrompt;
-      if (audioBase64 && mimeType) {
-        generateContentPayload = [
-          gradingPrompt,
-          {
-            inlineData: {
-              data: audioBase64,
-              mimeType: mimeType
-            }
-          }
-        ];
-      }
-      const result = await model.generateContent(generateContentPayload);
-      text = result.response.text();
-    } catch (primaryError: any) {
-      console.warn("Gemini API failed, initiating fallback...", primaryError.message);
-      
-      let fallbackPrompt = gradingPrompt;
-
-      // If this is an audio task, we need to transcribe it first using Groq Whisper
-      if (audioBase64) {
-        console.log("Transcribing audio via Groq Whisper fallback...");
+    // Step 4a: If audio is provided, always transcribe with Whisper before grading.
+    // This prevents the LLM from hallucinating words that were never spoken.
+    if (audioBase64) {
+      console.log("Transcribing audio via Groq Whisper...");
+      try {
         const audioBuffer = Buffer.from(audioBase64, 'base64');
         const blob = new Blob([audioBuffer], { type: mimeType || 'audio/webm' });
         const formData = new FormData();
@@ -208,23 +190,43 @@ Score: 0 - No response, completely unintelligible, or no English content related
 
         if (!groqRes.ok) {
           const errorText = await groqRes.text();
-          throw new Error(`Groq Whisper fallback failed: ${errorText}`);
+          throw new Error(`Groq Whisper transcription failed: ${errorText}`);
         }
 
         const groqData = await groqRes.json();
-        const transcript = groqData.text;
+        whisperTranscript = groqData.text;
+        console.log("Whisper transcript:", whisperTranscript);
 
-        // Modify the grading prompt to use the transcript instead of audio
-        fallbackPrompt = fallbackPrompt.replace(
-          "You have been provided with an audio recording of the student's response.",
-          `The student's response has been transcribed as follows: "${transcript}"`
-        ).replace(
-          "Listen to the provided audio file.",
-          "Read the provided transcript of the audio."
-        );
+        // Inject the verified transcript into the grading prompt so the LLM
+        // grades only what was actually said, not what it imagines was said.
+        gradingPrompt = gradingPrompt
+          .replace(
+            "You have been provided with an audio recording of the student's response.",
+            `The student's spoken response has been transcribed by a dedicated speech recognition engine. The transcript is: "${whisperTranscript}". Grade based ONLY on this transcript.`
+          )
+          .replace(
+            "Listen carefully to the provided audio recording. Transcribe exactly what the student said.",
+            `The student's spoken response has been transcribed by a dedicated speech recognition engine. The transcript is: "${whisperTranscript}". Use this as the student's verbatim response.`
+          )
+          .replace(
+            "Listen to the provided audio file.",
+            "Read the provided transcript of the student's response."
+          );
+
+      } catch (whisperError: any) {
+        console.error("Whisper transcription failed:", whisperError.message);
+        throw whisperError;
       }
+    }
 
-      // Call Mistral API with the fallbackPrompt
+    // Step 4b: Send the (now text-only) grading prompt to Gemini
+    try {
+      const result = await model.generateContent(gradingPrompt);
+      text = result.response.text();
+    } catch (primaryError: any) {
+      console.warn("Gemini API failed, initiating Mistral fallback...", primaryError.message);
+
+      // Call Mistral API as fallback
       console.log("Sending grading prompt to Mistral fallback...");
       const mistralRes = await fetch("https://api.mistral.ai/v1/chat/completions", {
         method: "POST",
@@ -234,7 +236,7 @@ Score: 0 - No response, completely unintelligible, or no English content related
         },
         body: JSON.stringify({
           model: "open-mistral-nemo",
-          messages: [{ role: "user", content: fallbackPrompt }],
+          messages: [{ role: "user", content: gradingPrompt }],
           response_format: { type: "json_object" }
         })
       });
@@ -293,10 +295,10 @@ Score: 0 - No response, completely unintelligible, or no English content related
          });
       }
 
-      // If we used a fallback for audio, we need to inject the transcript back into the response if the model didn't
-      if (audioBase64 && !parsedData.transcript) {
-          // It's possible the model didn't include it. We don't have the Groq transcript in scope here easily, 
-          // but the AI should have outputted it per the prompt. If not, it just won't show.
+      // Since Whisper always runs first, use its transcript as a reliable fallback
+      // if the LLM grader somehow omitted the transcript field in its JSON output.
+      if (whisperTranscript && !parsedData.transcript) {
+        parsedData.transcript = whisperTranscript;
       }
       
       console.log("DEBUG: Final parsedData from AI:", JSON.stringify(parsedData, null, 2));
