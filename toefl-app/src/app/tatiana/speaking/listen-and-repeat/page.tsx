@@ -23,6 +23,8 @@ export default function TatianaListenRepeat() {
   const [audioBlobUrl, setAudioBlobUrl] = useState<string | null>(null);
   const [audioBase64, setAudioBase64] = useState<string | null>(null);
   const [audioMimeType, setAudioMimeType] = useState("audio/webm");
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
+  const [maxTime, setMaxTime] = useState<number>(8);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentGrading, setCurrentGrading] = useState<any | null>(null);
   const [gradingError, setGradingError] = useState<string | null>(null);
@@ -153,12 +155,36 @@ export default function TatianaListenRepeat() {
 
       setAudioBlobUrl(null);
       setAudioBase64(null);
+      
+      // Calculate max recording time based on sentence length (8 to 12 seconds)
+      const wordCount = currentSentence.text.split(" ").length;
+      const estimatedSeconds = (wordCount / 2.5) + 4; // 2.5 words/sec + 4s buffer
+      const calculatedMax = Math.max(8, Math.min(12, Math.round(estimatedSeconds)));
+      setMaxTime(calculatedMax);
+      setTimeLeft(calculatedMax);
+
       recorder.start();
       setIsRecording(true);
     } catch {
       alert("Microphone access denied.");
     }
   };
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isRecording && timeLeft !== null) {
+      interval = setInterval(() => {
+        setTimeLeft((prev) => {
+          if (prev !== null && prev <= 0.1) {
+            stopRecording();
+            return 0;
+          }
+          return prev !== null ? prev - 0.1 : 0;
+        });
+      }, 100);
+    }
+    return () => clearInterval(interval);
+  }, [isRecording, timeLeft]);
 
   const stopRecording = () => {
     if (mediaRecorderRef.current && mediaRecorderRef.current.state !== "inactive") {
@@ -507,21 +533,30 @@ export default function TatianaListenRepeat() {
             <button
               onClick={isRecording ? stopRecording : startRecording}
               disabled={!!audioBlobUrl}
-              className={`w-24 h-24 rounded-2xl flex items-center justify-center transition-all shadow-md ${
+              className={`relative w-24 h-24 rounded-2xl flex items-center justify-center transition-all shadow-md overflow-hidden ${
                 !!audioBlobUrl
                   ? "bg-surface-variant text-on-surface-variant cursor-not-allowed"
                   : isRecording
-                  ? "bg-error text-white animate-pulse shadow-error/30"
+                  ? "bg-error text-white shadow-error/30"
                   : "bg-primary text-white hover:scale-105 shadow-primary/20"
               }`}
             >
-              <span className="material-symbols-outlined text-[40px]">{isRecording ? "stop" : "mic"}</span>
+              {/* Progress bar background when recording */}
+              {isRecording && timeLeft !== null && (
+                <div 
+                  className="absolute bottom-0 left-0 w-full bg-black/20 transition-all duration-100 ease-linear"
+                  style={{ height: `${(timeLeft / maxTime) * 100}%` }}
+                />
+              )}
+              <span className="material-symbols-outlined text-[40px] relative z-10">
+                {isRecording ? "stop" : "mic"}
+              </span>
             </button>
             <p className="text-[14px] font-medium text-on-surface-variant">
               {audioBlobUrl
                 ? "Recording saved. Click Submit for AI scoring."
                 : isRecording
-                ? "Recording... tap to stop"
+                ? `Recording... ${timeLeft?.toFixed(1)}s left (Tap to stop)`
                 : "Tap to record your repetition"}
             </p>
 
