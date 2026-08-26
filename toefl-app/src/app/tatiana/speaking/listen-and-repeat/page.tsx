@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { tatianaTests } from "@/data/tatianaTests";
+import { createBrowserClient } from "@supabase/ssr";
 
 type Phase = "select" | "practice" | "done";
 
@@ -26,6 +27,8 @@ export default function TatianaListenRepeat() {
   const [currentGrading, setCurrentGrading] = useState<any | null>(null);
   const [gradingError, setGradingError] = useState<string | null>(null);
   const [results, setResults] = useState<SentenceResult[]>([]);
+  // Map of testNumber -> average score string (e.g. "3.4") or null
+  const [avgScores, setAvgScores] = useState<Record<number, string | null>>({});
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<BlobPart[]>([]);
@@ -33,6 +36,49 @@ export default function TatianaListenRepeat() {
   const selectedTest = tatianaTests.find((t) => t.testNumber === selectedTestNum);
   const sentences = selectedTest?.listenRepeat.sentences || [];
   const currentSentence = sentences[currentIdx];
+
+  // ── FETCH AVERAGE SCORES PER TEST ────────────────────────────────────────
+  const fetchAvgScores = async () => {
+    try {
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+      const { data, error } = await supabase
+        .from("practice_sessions")
+        .select("task_id, score_value")
+        .eq("task_type", "listen-and-repeat")
+        .like("task_id", "tatiana-lr-test%");
+
+      if (error || !data) return;
+
+      // Group scores by test number and compute average
+      const groups: Record<number, number[]> = {};
+      for (const row of data) {
+        // task_id format: tatiana-lr-test{N}-s{M}
+        const match = row.task_id?.match(/tatiana-lr-test(\d+)-s/);
+        if (!match) continue;
+        const testNum = parseInt(match[1], 10);
+        const score = parseFloat(row.score_value);
+        if (isNaN(score)) continue;
+        if (!groups[testNum]) groups[testNum] = [];
+        groups[testNum].push(score);
+      }
+
+      const computed: Record<number, string | null> = {};
+      for (const [testNum, scores] of Object.entries(groups)) {
+        const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
+        computed[Number(testNum)] = avg.toFixed(1);
+      }
+      setAvgScores(computed);
+    } catch (e) {
+      // silently ignore — scores are non-critical
+    }
+  };
+
+  useEffect(() => {
+    fetchAvgScores();
+  }, []);
 
   // ── TTS ──────────────────────────────────────────────────────────────────
   const speakSentence = (text: string) => {
@@ -216,6 +262,22 @@ export default function TatianaListenRepeat() {
                   <span className="material-symbols-outlined text-primary text-[18px]">record_voice_over</span>
                 </div>
                 <span className="text-[13px] font-bold text-primary uppercase tracking-wider">Test {test.testNumber}</span>
+                {/* Average score badge */}
+                {avgScores[test.testNumber] != null ? (
+                  <span
+                    className={`ml-auto text-[12px] font-bold px-2.5 py-0.5 rounded-full ${
+                      parseFloat(avgScores[test.testNumber]!) >= 4
+                        ? "bg-[#0d7a5f]/10 text-[#0d7a5f]"
+                        : parseFloat(avgScores[test.testNumber]!) >= 2.5
+                        ? "bg-[#c2790a]/10 text-[#c2790a]"
+                        : "bg-error/10 text-error"
+                    }`}
+                  >
+                    ★ {avgScores[test.testNumber]}/5
+                  </span>
+                ) : (
+                  <span className="ml-auto text-[12px] text-on-surface-variant/50">—/5</span>
+                )}
               </div>
               <p className="text-[14px] font-semibold text-on-surface leading-snug">{test.title}</p>
               <p className="text-[12px] text-on-surface-variant">{test.listenRepeat.sentences.length} sentences · AI scored</p>
@@ -257,7 +319,11 @@ export default function TatianaListenRepeat() {
               <span className="material-symbols-outlined text-[18px]">replay</span> Try Again
             </button>
             <button
-              onClick={() => { setPhase("select"); setSelectedTestNum(null); }}
+              onClick={() => {
+                setPhase("select");
+                setSelectedTestNum(null);
+                fetchAvgScores();
+              }}
               className="bg-surface-container-high text-on-surface font-bold text-[14px] px-6 py-3 rounded-lg hover:bg-surface-variant transition-colors flex items-center gap-2"
             >
               <span className="material-symbols-outlined text-[18px]">list</span> Choose Another Test
@@ -334,7 +400,17 @@ export default function TatianaListenRepeat() {
       {/* Header */}
       <div className="flex items-center gap-3">
         <button
-          onClick={() => { setPhase("select"); setSelectedTestNum(null); setCurrentIdx(0); setAudioBlobUrl(null); setAudioBase64(null); setHasPlayed(false); setResults([]); setCurrentGrading(null); }}
+          onClick={() => {
+            setPhase("select");
+            setSelectedTestNum(null);
+            setCurrentIdx(0);
+            setAudioBlobUrl(null);
+            setAudioBase64(null);
+            setHasPlayed(false);
+            setResults([]);
+            setCurrentGrading(null);
+            fetchAvgScores();
+          }}
           className="text-on-surface-variant hover:text-primary transition-colors"
         >
           <span className="material-symbols-outlined">arrow_back</span>
