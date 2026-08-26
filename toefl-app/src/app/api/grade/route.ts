@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { createClient } from '@/utils/supabase/server';
+import crypto from 'crypto';
 
 export async function POST(request: Request) {
   try {
@@ -312,9 +313,11 @@ Score: 0 - No response, completely unintelligible, or no English content related
       // Save the practice session score to the database if user is logged in
       const { data: { user } } = await supabase.auth.getUser();
       if (user && taskId && parsedData.score) {
+        parsedData.taskId = taskId; // Save the original string taskId in JSONB
+        
         const { error: insertError } = await supabase.from('practice_sessions').insert({
           user_id: user.id,
-          task_id: taskId,
+          task_id: crypto.randomUUID(), // Prevent UUID parse error
           task_type: taskType,
           score_value: parsedData.score,
           score_details: parsedData

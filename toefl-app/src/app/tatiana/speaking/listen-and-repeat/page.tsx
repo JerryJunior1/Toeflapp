@@ -44,35 +44,54 @@ export default function TatianaListenRepeat() {
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
       );
-      const { data, error } = await supabase
-        .from("practice_sessions")
-        .select("task_id, score_value")
-        .eq("task_type", "listen-and-repeat")
-        .like("task_id", "tatiana-lr-test%");
+        const { data, error } = await supabase
+          .from("practice_sessions")
+          .select("score_details, score_value, created_at")
+          .eq("task_type", "listen-and-repeat")
+          .order("created_at", { ascending: false });
 
-      if (error || !data) return;
+        if (error) {
+          console.error("fetchAvgScores Supabase Error:", error);
+          return;
+        }
+        if (!data) {
+          console.warn("fetchAvgScores No data returned");
+          return;
+        }
+        
+        console.log("fetchAvgScores fetched rows:", data.length);
 
-      // Group scores by test number and compute average
-      const groups: Record<number, number[]> = {};
-      for (const row of data) {
-        // task_id format: tatiana-lr-test{N}-s{M}
-        const match = row.task_id?.match(/tatiana-lr-test(\d+)-s/);
-        if (!match) continue;
-        const testNum = parseInt(match[1], 10);
-        const score = parseFloat(row.score_value);
-        if (isNaN(score)) continue;
-        if (!groups[testNum]) groups[testNum] = [];
-        groups[testNum].push(score);
-      }
+        // Group scores by test number using only the latest attempt for each sentence
+        const groups: Record<number, number[]> = {};
+        const seenTasks = new Set<string>();
+
+        for (const row of data) {
+          const taskId = row.score_details?.taskId;
+          if (!taskId || !taskId.startsWith("tatiana-lr-test") || seenTasks.has(taskId)) continue;
+          seenTasks.add(taskId);
+
+          // taskId format: tatiana-lr-test{N}-s{M}
+          const match = taskId.match(/tatiana-lr-test(\d+)-s/);
+          if (!match) continue;
+          
+          const testNum = parseInt(match[1], 10);
+          const score = parseFloat(row.score_value);
+          
+          if (isNaN(score)) continue;
+          if (!groups[testNum]) groups[testNum] = [];
+          
+          groups[testNum].push(score);
+        }
 
       const computed: Record<number, string | null> = {};
       for (const [testNum, scores] of Object.entries(groups)) {
         const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
         computed[Number(testNum)] = avg.toFixed(1);
       }
+      console.log("Groups:", groups, "Computed avgScores:", computed);
       setAvgScores(computed);
     } catch (e) {
-      // silently ignore — scores are non-critical
+      console.error("fetchAvgScores failed", e);
     }
   };
 
