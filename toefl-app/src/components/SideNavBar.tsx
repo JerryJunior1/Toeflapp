@@ -183,6 +183,16 @@ export default function SideNavBar({
                     <span className="text-[14px]">Take an Interview</span>
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/tatiana/speaking/templates"
+                    className={getLinkClasses('/tatiana/speaking/templates')}
+                    onClick={closeSidebar}
+                  >
+                    <span className="material-symbols-outlined text-[18px]">menu_book</span>
+                    <span className="text-[14px]">Templates & Tips</span>
+                  </Link>
+                </li>
                 
                 <li>
                   <div className="px-3 pb-1 pt-3 text-[10px] font-semibold text-on-surface-variant uppercase tracking-wider">Writing</div>
