@@ -28,6 +28,7 @@ export default function TatianaInterview() {
 
   // Grading
   const [gradingResults, setGradingResults] = useState<any[]>([]);
+  const [audioUrls, setAudioUrls] = useState<string[]>([]);
   const [gradingError, setGradingError] = useState<string | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
@@ -130,6 +131,7 @@ export default function TatianaInterview() {
     setAudioBlobUrl(null);
     setAudioBase64(null);
     setGradingResults([]);
+    setAudioUrls([]);
     setGradingError(null);
     setTimeLeft(45);
   };
@@ -142,6 +144,7 @@ export default function TatianaInterview() {
     setAudioBase64(null);
     setCurrentQuestionIndex(0);
     setGradingResults([]);
+    setAudioUrls([]);
     setGradingError(null);
     setTimeLeft(45);
     setShowSummary(false);
@@ -250,6 +253,10 @@ export default function TatianaInterview() {
       const newResults = [...gradingResults];
       newResults[currentQuestionIndex] = json.data;
       setGradingResults(newResults);
+
+      const newUrls = [...audioUrls];
+      newUrls[currentQuestionIndex] = audioBlobUrl as string;
+      setAudioUrls(newUrls);
     } catch (err: any) {
       setGradingError(err.message);
     } finally {
@@ -385,13 +392,13 @@ export default function TatianaInterview() {
 
     return (
       <div className="w-full max-w-[800px] mx-auto flex flex-col gap-6">
-        <div className="card rounded-xl p-8 min-h-[500px] flex flex-col items-center justify-center text-center">
+        <div className="card rounded-xl p-8 flex flex-col items-center justify-center text-center">
           <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6">
             <span className="material-symbols-outlined text-[48px] text-primary">emoji_events</span>
           </div>
           <h2 className="font-headline text-[32px] font-bold text-on-surface mb-2">Interview Complete!</h2>
           <p className="text-[16px] text-on-surface-variant mb-8 max-w-md">
-            You have successfully completed {selectedTest.title}. Here is your overall performance.
+            You have successfully completed {selectedTest?.title}. Here is your overall performance.
           </p>
           
           <div className="bg-surface-container-low border border-surface-variant rounded-xl p-8 mb-8 min-w-[300px]">
@@ -401,10 +408,55 @@ export default function TatianaInterview() {
 
           <button
             onClick={handleBack}
-            className="bg-primary text-white font-bold text-[14px] px-8 py-3 rounded hover:bg-primary-container transition-colors flex items-center gap-2 shadow-sm"
+            className="bg-primary text-white font-bold text-[14px] px-8 py-3 rounded hover:bg-primary-container transition-colors flex items-center gap-2 shadow-sm mb-4"
           >
             Return to Test List <span className="material-symbols-outlined text-[18px]">arrow_back</span>
           </button>
+        </div>
+
+        {/* Breakdown of questions */}
+        <div className="flex flex-col gap-6">
+          <h3 className="font-bold text-[20px] text-on-surface mt-4">Review Your Answers</h3>
+          {selectedTest?.interview.questions.map((q, i) => {
+            const grade = gradingResults[i];
+            const audio = audioUrls[i];
+            if (!grade) return null;
+
+            return (
+              <div key={i} className="card rounded-xl p-6 border border-surface-variant flex flex-col gap-4">
+                <div className="flex items-start gap-4">
+                  <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
+                    <span className="text-white font-bold text-[13px]">{i + 1}</span>
+                  </div>
+                  <div className="flex-1 overflow-hidden">
+                    <p className="text-[16px] font-semibold text-on-surface mb-3 leading-relaxed">
+                      "{q.question}"
+                    </p>
+                    {audio && (
+                      <audio src={audio} controls className="h-10 w-full max-w-sm mb-4" />
+                    )}
+                    <div className="flex items-center gap-2 mb-4">
+                       <span className="text-[13px] font-bold bg-primary/10 text-primary px-3 py-1.5 rounded-full flex items-center gap-1">
+                         <span className="material-symbols-outlined text-[16px]">verified</span>
+                         Score: {grade.score}
+                       </span>
+                    </div>
+                    {grade.transcript && (
+                      <div className="bg-surface border border-outline-variant rounded-lg p-3 mb-4">
+                        <p className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant mb-1 flex items-center gap-1.5">
+                          <span className="material-symbols-outlined text-[14px]">transcribe</span> What you said
+                        </p>
+                        <p className="text-[14px] text-on-surface italic opacity-80">{grade.transcript}</p>
+                      </div>
+                    )}
+                    <p className="text-[14px] text-on-surface-variant leading-relaxed">
+                      {grade.overallFeedback}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
     );
