@@ -65,14 +65,7 @@ export default function TatianaWriteEmail() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to grade response");
 
-      // AI Returns a json block sometimes enclosed in markdown
-      let cleanJson = data.result;
-      if (cleanJson.includes("```json")) {
-        cleanJson = cleanJson.replace(/```json\n/g, "").replace(/```/g, "");
-      }
-      
-      const parsed = JSON.parse(cleanJson);
-      setGradingResult(parsed);
+      setGradingResult(data.data);
       setPhase("done");
     } catch (err: any) {
       setGradingError(err.message);

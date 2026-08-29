@@ -29,6 +29,7 @@ export default function TatianaInterview() {
   const [gradingResults, setGradingResults] = useState<any[]>([]);
   const [gradingError, setGradingError] = useState<string | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<BlobPart[]>([]);
@@ -87,6 +88,7 @@ export default function TatianaInterview() {
     setGradingResults([]);
     setGradingError(null);
     setTimeLeft(45);
+    setShowSummary(false);
     if (isRecording) stopRecording();
   };
 
@@ -293,6 +295,48 @@ export default function TatianaInterview() {
   const currentGrading = gradingResults[currentQuestionIndex];
   const isFinished =
     currentQuestionIndex >= selectedTest.interview.questions.length - 1 && currentGrading;
+
+  // ── SUMMARY VIEW ──────────────────────────────────────────────────────────
+  if (showSummary) {
+    let totalScore = 0;
+    let count = 0;
+    gradingResults.forEach((res) => {
+      if (res && res.score) {
+        const s = parseFloat(res.score.split('/')[0]);
+        if (!isNaN(s)) {
+          totalScore += s;
+          count++;
+        }
+      }
+    });
+    const averageScore = count > 0 ? totalScore / count : 0;
+
+    return (
+      <div className="w-full max-w-[800px] mx-auto flex flex-col gap-6">
+        <div className="card rounded-xl p-8 min-h-[500px] flex flex-col items-center justify-center text-center">
+          <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+            <span className="material-symbols-outlined text-[48px] text-primary">emoji_events</span>
+          </div>
+          <h2 className="font-headline text-[32px] font-bold text-on-surface mb-2">Interview Complete!</h2>
+          <p className="text-[16px] text-on-surface-variant mb-8 max-w-md">
+            You have successfully completed {selectedTest.title}. Here is your overall performance.
+          </p>
+          
+          <div className="bg-surface-container-low border border-surface-variant rounded-xl p-8 mb-8 min-w-[300px]">
+            <p className="text-[14px] font-bold text-on-surface-variant uppercase tracking-wider mb-2">Average Score</p>
+            <p className="text-[48px] font-black text-primary">{averageScore.toFixed(1)} <span className="text-[20px] text-on-surface-variant">/ 5</span></p>
+          </div>
+
+          <button
+            onClick={handleBack}
+            className="bg-primary text-white font-bold text-[14px] px-8 py-3 rounded hover:bg-primary-container transition-colors flex items-center gap-2 shadow-sm"
+          >
+            Return to Test List <span className="material-symbols-outlined text-[18px]">arrow_back</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-[800px] mx-auto flex flex-col gap-6">
@@ -560,10 +604,10 @@ export default function TatianaInterview() {
             <div className="flex justify-end pt-4 border-t border-surface-variant">
               {isFinished ? (
                 <button
-                  onClick={handleBack}
+                  onClick={() => setShowSummary(true)}
                   className="bg-secondary text-white font-bold text-[14px] px-8 py-3 rounded hover:bg-secondary/90 transition-colors flex items-center gap-2 shadow-sm"
                 >
-                  Finish Interview <span className="material-symbols-outlined text-[18px]">done_all</span>
+                  View Summary <span className="material-symbols-outlined text-[18px]">assessment</span>
                 </button>
               ) : (
                 <button
