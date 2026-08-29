@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { tatianaTests, TatianaTest } from "@/data/tatianaTests";
+import { createBrowserClient } from "@supabase/ssr";
 
 declare global {
   interface Window {
@@ -30,10 +31,65 @@ export default function TatianaInterview() {
   const [gradingError, setGradingError] = useState<string | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
+  const [avgScores, setAvgScores] = useState<Record<number, string | null>>({});
 
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<BlobPart[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // ── FETCH AVERAGE SCORES PER TEST ────────────────────────────────────────
+  const fetchAvgScores = async () => {
+    try {
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+      const { data, error } = await supabase
+        .from("practice_sessions")
+        .select("score_details, score_value, created_at")
+        .eq("task_type", "take-interview")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("fetchAvgScores Supabase Error:", error);
+        return;
+      }
+      if (!data) return;
+
+      const groups: Record<number, number[]> = {};
+      const seenTasks = new Set<string>();
+
+      for (const row of data) {
+        const taskId = row.score_details?.taskId;
+        if (!taskId || !taskId.startsWith("tatiana-test-") || seenTasks.has(taskId)) continue;
+        seenTasks.add(taskId);
+
+        const match = taskId.match(/tatiana-test-(\d+)-q/);
+        if (!match) continue;
+        
+        const testNum = parseInt(match[1], 10);
+        const scoreStr = row.score_value;
+        const scoreNum = parseFloat(scoreStr ? scoreStr.split('/')[0] : "0");
+        const score = isNaN(scoreNum) ? 0 : scoreNum;
+        
+        if (!groups[testNum]) groups[testNum] = [];
+        groups[testNum].push(score);
+      }
+
+      const computed: Record<number, string | null> = {};
+      for (const [testNum, scores] of Object.entries(groups)) {
+        const avg = scores.reduce((a, b) => a + b, 0) / (scores.length || 1);
+        computed[Number(testNum)] = avg.toFixed(1);
+      }
+      setAvgScores(computed);
+    } catch (e) {
+      console.error("fetchAvgScores failed", e);
+    }
+  };
+
+  useEffect(() => {
+    fetchAvgScores();
+  }, []);
 
   // ── TTS ──────────────────────────────────────────────────────────────────
   const speakQuestion = (text: string) => {
@@ -89,6 +145,7 @@ export default function TatianaInterview() {
     setGradingError(null);
     setTimeLeft(45);
     setShowSummary(false);
+    fetchAvgScores();
     if (isRecording) stopRecording();
   };
 
@@ -267,9 +324,24 @@ export default function TatianaInterview() {
                     <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
                       <span className="material-symbols-outlined">forum</span>
                     </div>
-                    <span className="text-[12px] font-bold text-on-surface-variant bg-surface-variant px-2 py-1 rounded">
-                      Test #{test.testNumber}
-                    </span>
+                    <div className="flex items-center gap-2">
+                      {avgScores[test.testNumber] != null && (
+                        <span
+                          className={`text-[12px] font-bold px-2.5 py-1 rounded-full ${
+                            parseFloat(avgScores[test.testNumber]!) >= 4
+                              ? "bg-[#0d7a5f]/10 text-[#0d7a5f]"
+                              : parseFloat(avgScores[test.testNumber]!) >= 2.5
+                              ? "bg-[#c2790a]/10 text-[#c2790a]"
+                              : "bg-error/10 text-error"
+                          }`}
+                        >
+                          ★ {avgScores[test.testNumber]}/5
+                        </span>
+                      )}
+                      <span className="text-[12px] font-bold text-on-surface-variant bg-surface-variant px-2 py-1 rounded">
+                        Test #{test.testNumber}
+                      </span>
+                    </div>
                   </div>
                   <h3 className="text-[18px] font-bold text-on-surface mb-1 line-clamp-2">{test.title}</h3>
                   <p className="text-[13px] text-on-surface-variant line-clamp-2 mb-4">{test.interview.scenario}</p>
