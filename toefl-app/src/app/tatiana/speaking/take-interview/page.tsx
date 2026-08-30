@@ -449,9 +449,40 @@ export default function TatianaInterview() {
                         <p className="text-[14px] text-on-surface italic opacity-80">{grade.transcript}</p>
                       </div>
                     )}
-                    <p className="text-[14px] text-on-surface-variant leading-relaxed">
+                    <p className="text-[14px] text-on-surface-variant leading-relaxed mb-4">
                       {grade.overallFeedback}
                     </p>
+                    
+                    {grade.grammarCorrections?.length > 0 && (
+                      <div className="bg-surface-container-low p-4 rounded-xl border border-surface-variant mb-4">
+                        <h4 className="text-[14px] font-bold text-on-surface mb-3 flex items-center gap-2">
+                          <span className="material-symbols-outlined text-[18px]">spellcheck</span> Language Corrections
+                        </h4>
+                        <div className="space-y-3">
+                          {grade.grammarCorrections.map((corr: any, idx: number) => (
+                            <div key={idx} className="border-b border-surface-variant last:border-0 pb-3 last:pb-0">
+                              <div className="flex flex-wrap gap-2 text-[13px] mb-1">
+                                <span className="bg-error/10 text-error px-2 py-1 rounded line-through">{corr.original}</span>
+                                <span className="material-symbols-outlined text-on-surface-variant text-[18px]">arrow_forward</span>
+                                <span className="bg-[#1a73e8]/10 text-[#1a73e8] px-2 py-1 rounded font-medium">{corr.corrected}</span>
+                              </div>
+                              <p className="text-[13px] text-on-surface-variant italic">"{corr.explanation}"</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {grade.idealResponse && (
+                      <div className="bg-[#1a73e8]/5 p-4 rounded-xl border border-[#1a73e8]/20">
+                        <h4 className="text-[14px] font-bold text-[#1a73e8] mb-2 flex items-center gap-2">
+                          <span className="material-symbols-outlined text-[18px]">auto_awesome</span> Your Improved Answer
+                        </h4>
+                        <p className="text-[14px] text-on-surface italic leading-relaxed whitespace-pre-wrap">
+                          {grade.idealResponse}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
