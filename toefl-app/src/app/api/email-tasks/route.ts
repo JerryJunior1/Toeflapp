@@ -44,7 +44,7 @@ export async function GET(request: Request) {
       if (user) {
         const { data: userSessions } = await supabase
           .from('practice_sessions')
-          .select('score_details, score_value')
+          .select('score_details, score_value, task_id')
           .eq('user_id', user.id)
           .eq('task_type', 'write-email')
           .order('created_at', { ascending: false });

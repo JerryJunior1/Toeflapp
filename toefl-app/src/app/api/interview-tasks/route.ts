@@ -32,7 +32,7 @@ export async function GET(request: Request) {
       if (user) {
         const { data: userSessions } = await supabase
           .from('practice_sessions')
-          .select('task_id, score_value')
+          .select('score_details, score_value, task_id')
           .eq('user_id', user.id)
           .eq('task_type', 'take-interview');
           
@@ -43,7 +43,7 @@ export async function GET(request: Request) {
       
       const enhancedData = data.map(task => {
         // Find all sessions for this task and calculate the average score
-        const taskSessions = sessions.filter(s => s.task_id === task.id);
+        const taskSessions = sessions.filter(s => s.score_details?.taskId === task.id || s.task_id === task.id);
         let avgScore: string | null = null;
         if (taskSessions.length > 0) {
           const numerators = taskSessions
