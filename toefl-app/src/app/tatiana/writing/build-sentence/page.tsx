@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { tatianaTests } from "@/data/tatianaTests";
+import { createBrowserClient } from "@supabase/ssr";
 
 type Phase = "select" | "practice" | "done";
 
@@ -28,6 +29,61 @@ export default function TatianaBuildSentence() {
   const selectedTest = tatianaTests.find((t) => t.testNumber === selectedTestNum);
   const items = selectedTest?.writing?.buildSentence || [];
   const current = items[currentIdx];
+
+  const [avgScores, setAvgScores] = useState<Record<number, string | null>>({});
+
+  const fetchAvgScores = async () => {
+    try {
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+      const { data, error } = await supabase
+        .from("practice_sessions")
+        .select("score_details, score_value, created_at")
+        .eq("task_type", "build-sentence")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("fetchAvgScores Supabase Error:", error);
+        return;
+      }
+      if (!data) return;
+
+      const groups: Record<number, number[]> = {};
+      const seenTasks = new Set<string>();
+
+      for (const row of data) {
+        const taskId = row.score_details?.taskId;
+        if (!taskId || !taskId.startsWith("tatiana-build-sentence-") || seenTasks.has(taskId)) continue;
+        seenTasks.add(taskId);
+
+        const match = taskId.match(/tatiana-build-sentence-(\d+)/);
+        if (!match) continue;
+        
+        const testNum = parseInt(match[1], 10);
+        const scoreStr = row.score_value;
+        const scoreNum = parseFloat(scoreStr ? scoreStr.split('/')[0] : "0");
+        const score = isNaN(scoreNum) ? 0 : scoreNum;
+        
+        if (!groups[testNum]) groups[testNum] = [];
+        groups[testNum].push(score);
+      }
+
+      const computed: Record<number, string | null> = {};
+      for (const [testNum, scores] of Object.entries(groups)) {
+        const avg = scores.reduce((a, b) => a + b, 0) / (scores.length || 1);
+        computed[Number(testNum)] = Math.round(avg).toString();
+      }
+      setAvgScores(computed);
+    } catch (e) {
+      console.error("fetchAvgScores failed", e);
+    }
+  };
+
+  useEffect(() => {
+    fetchAvgScores();
+  }, []);
 
   // Initialize words when moving to a new sentence
   useEffect(() => {
@@ -87,6 +143,43 @@ export default function TatianaBuildSentence() {
       ]);
     }
     
+    // Save to supabase
+    const finalResults = fromTimeout && current 
+      ? [...results, { 
+          prompt: current.prompt, 
+          userAnswer: answerWords.map(w => w.word).join(" "), 
+          correctAnswer: current.answer, 
+          isCorrect: normalize(answerWords.map(w => w.word).join(" ")) === normalize(current.answer) 
+        }]
+      : results;
+    
+    if (finalResults.length > 0) {
+      const correct = finalResults.filter((r) => r.isCorrect).length;
+      const scorePct = Math.round((correct / finalResults.length) * 100);
+      
+      const saveScore = async () => {
+        try {
+          const supabase = createBrowserClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL!,
+            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+          );
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            await supabase.from('practice_sessions').insert({
+              user_id: user.id,
+              task_id: crypto.randomUUID(),
+              task_type: "build-sentence",
+              score_value: `${scorePct}`,
+              score_details: { taskId: `tatiana-build-sentence-${selectedTestNum}`, score: scorePct }
+            });
+          }
+        } catch (e) {
+          console.error("Failed to save build-sentence score", e);
+        }
+      };
+      saveScore();
+    }
+
     setPhase("done");
     if (timerRef.current) clearTimeout(timerRef.current);
   };
@@ -179,7 +272,22 @@ export default function TatianaBuildSentence() {
                 <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <span className="material-symbols-outlined text-primary text-[18px]">build</span>
                 </div>
-                <span className="text-[13px] font-bold text-primary uppercase tracking-wider">Test {test.testNumber}</span>
+                <div className="flex items-center gap-2">
+                  {avgScores[test.testNumber] != null && (
+                    <span
+                      className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                        parseFloat(avgScores[test.testNumber]!) >= 80
+                          ? "bg-[#0d7a5f]/10 text-[#0d7a5f]"
+                          : parseFloat(avgScores[test.testNumber]!) >= 50
+                          ? "bg-[#c2790a]/10 text-[#c2790a]"
+                          : "bg-error/10 text-error"
+                      }`}
+                    >
+                      ★ {avgScores[test.testNumber]}%
+                    </span>
+                  )}
+                  <span className="text-[13px] font-bold text-primary uppercase tracking-wider">Test {test.testNumber}</span>
+                </div>
               </div>
               <p className="text-[14px] font-semibold text-on-surface leading-snug">{test.title}</p>
               <p className="text-[12px] text-on-surface-variant">{test.writing!.buildSentence.length} sentences</p>

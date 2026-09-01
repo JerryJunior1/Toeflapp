@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react';
 
-interface DiscussionData {
+interface AcademicTaskData {
+  id: string;
   topic: string;
   professorPrompt: string;
   student1Name: string;
@@ -13,7 +14,7 @@ interface DiscussionData {
 
 export default function AcademicDiscussion() {
   const [tasksList, setTasksList] = useState<any[]>([]);
-  const [selectedTask, setSelectedTask] = useState<DiscussionData | null>(null);
+  const [selectedTask, setSelectedTask] = useState<AcademicTaskData | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -52,6 +53,7 @@ export default function AcademicDiscussion() {
       if (!res.ok) throw new Error(json.error || 'Failed to fetch task details');
       
       setSelectedTask({
+        id: json.id,
         topic: json.topic_title,
         professorPrompt: json.professor_prompt,
         student1Name: json.student_1_name,
@@ -152,17 +154,28 @@ export default function AcademicDiscussion() {
                 onClick={() => handleSelectTask(task.id)}
                 className="bg-surface-container-low border border-surface-variant rounded-xl p-6 cursor-pointer hover:border-primary hover:shadow-md transition-all group"
               >
-                <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4 group-hover:bg-primary group-hover:text-white transition-colors">
-                  <span className="material-symbols-outlined">edit_document</span>
+                <div className="flex justify-between items-start mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+                      <span className="material-symbols-outlined">edit_document</span>
+                    </div>
+                    {task.lastScore && (
+                      <span
+                        className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                          parseFloat(task.lastScore) >= 4
+                            ? "bg-[#0d7a5f]/10 text-[#0d7a5f]"
+                            : parseFloat(task.lastScore) >= 2.5
+                            ? "bg-[#c2790a]/10 text-[#c2790a]"
+                            : "bg-error/10 text-error"
+                        }`}
+                      >
+                        ★ {task.lastScore.split('/')[0]}/5
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <h3 className="text-[18px] font-bold text-on-surface mb-2 line-clamp-2">{task.topic_title}</h3>
                 <div className="mt-auto pt-4 flex flex-col gap-2">
-                  {task.lastScore && (
-                    <div className="text-[14px] text-primary font-medium bg-primary/10 w-fit px-2 py-0.5 rounded flex items-center gap-1">
-                      <span className="material-symbols-outlined text-[14px]">star</span>
-                      Last Score: {task.lastScore}
-                    </div>
-                  )}
                   <p className="text-[14px] text-on-surface-variant flex items-center gap-1">
                     <span className="material-symbols-outlined text-[16px]">arrow_forward</span> Start Practice
                   </p>
@@ -191,6 +204,7 @@ export default function AcademicDiscussion() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          taskId: selectedTask.id,
           taskType: 'academic-discussion',
           promptData: selectedTask,
           userResponse: response

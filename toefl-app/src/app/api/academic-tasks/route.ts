@@ -44,7 +44,7 @@ export async function GET(request: Request) {
       if (user) {
         const { data: userSessions } = await supabase
           .from('practice_sessions')
-          .select('task_id, score_value')
+          .select('score_details, score_value')
           .eq('user_id', user.id)
           .eq('task_type', 'academic-discussion')
           .order('created_at', { ascending: false });
@@ -55,7 +55,7 @@ export async function GET(request: Request) {
       }
       
       const enhancedData = data.map(task => {
-        const lastSession = sessions.find(s => s.task_id === task.id);
+        const lastSession = sessions.find(s => s.score_details?.taskId === task.id || s.task_id === task.id);
         return {
           ...task,
           lastScore: lastSession ? lastSession.score_value : null

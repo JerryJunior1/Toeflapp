@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 
 interface EmailTaskData {
+  id: string;
   topicCategory: string;
   taskTitle: string;
   promptScenario: string;
@@ -50,6 +51,7 @@ export default function WriteEmail() {
       if (!res.ok) throw new Error(json.error || 'Failed to fetch task details');
       
       setSelectedTask({
+        id: json.id,
         topicCategory: json.topic_category,
         taskTitle: json.task_title,
         promptScenario: json.prompt_scenario,
@@ -138,8 +140,23 @@ export default function WriteEmail() {
                       className="bg-surface-container-low border border-surface-variant rounded-xl p-6 cursor-pointer hover:border-primary hover:shadow-md transition-all group"
                     >
                       <div className="flex justify-between items-start mb-4">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-                          <span className="material-symbols-outlined">mail</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+                            <span className="material-symbols-outlined">mail</span>
+                          </div>
+                          {task.lastScore && (
+                            <span
+                              className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                                parseFloat(task.lastScore) >= 4
+                                  ? "bg-[#0d7a5f]/10 text-[#0d7a5f]"
+                                  : parseFloat(task.lastScore) >= 2.5
+                                  ? "bg-[#c2790a]/10 text-[#c2790a]"
+                                  : "bg-error/10 text-error"
+                              }`}
+                            >
+                              ★ {task.lastScore.split('/')[0]}/5
+                            </span>
+                          )}
                         </div>
                         {task.topic_category && (
                           <span className="text-[10px] font-bold px-2 py-1 bg-surface-variant text-on-surface-variant rounded uppercase tracking-wider">
@@ -149,12 +166,6 @@ export default function WriteEmail() {
                       </div>
                       <h3 className="text-[18px] font-bold text-on-surface mb-2 line-clamp-2">{task.task_title}</h3>
                       <div className="mt-auto pt-4 flex flex-col gap-2">
-                        {task.lastScore && (
-                          <div className="text-[14px] text-primary font-medium bg-primary/10 w-fit px-2 py-0.5 rounded flex items-center gap-1">
-                            <span className="material-symbols-outlined text-[14px]">star</span>
-                            Last Score: {task.lastScore}
-                          </div>
-                        )}
                         <p className="text-[14px] text-on-surface-variant flex items-center gap-1">
                           <span className="material-symbols-outlined text-[16px]">arrow_forward</span> Start Practice
                         </p>
@@ -174,8 +185,23 @@ export default function WriteEmail() {
                       className="bg-surface-container-low border border-surface-variant rounded-xl p-6 cursor-pointer hover:border-primary hover:shadow-md transition-all group"
                     >
                       <div className="flex justify-between items-start mb-4">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
-                          <span className="material-symbols-outlined">mail</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+                            <span className="material-symbols-outlined">mail</span>
+                          </div>
+                          {task.lastScore && (
+                            <span
+                              className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                                parseFloat(task.lastScore) >= 4
+                                  ? "bg-[#0d7a5f]/10 text-[#0d7a5f]"
+                                  : parseFloat(task.lastScore) >= 2.5
+                                  ? "bg-[#c2790a]/10 text-[#c2790a]"
+                                  : "bg-error/10 text-error"
+                              }`}
+                            >
+                              ★ {task.lastScore.split('/')[0]}/5
+                            </span>
+                          )}
                         </div>
                         {task.topic_category && (
                           <span className="text-[10px] font-bold px-2 py-1 bg-surface-variant text-on-surface-variant rounded uppercase tracking-wider">
@@ -185,12 +211,6 @@ export default function WriteEmail() {
                       </div>
                       <h3 className="text-[18px] font-bold text-on-surface mb-2 line-clamp-2">{task.task_title}</h3>
                       <div className="mt-auto pt-4 flex flex-col gap-2">
-                        {task.lastScore && (
-                          <div className="text-[14px] text-primary font-medium bg-primary/10 w-fit px-2 py-0.5 rounded flex items-center gap-1">
-                            <span className="material-symbols-outlined text-[14px]">star</span>
-                            Last Score: {task.lastScore}
-                          </div>
-                        )}
                         <p className="text-[14px] text-on-surface-variant flex items-center gap-1">
                           <span className="material-symbols-outlined text-[16px]">arrow_forward</span> Start Practice
                         </p>
@@ -221,6 +241,7 @@ export default function WriteEmail() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          taskId: selectedTask.id,
           taskType: 'write-email',
           promptData: selectedTask,
           userResponse: response

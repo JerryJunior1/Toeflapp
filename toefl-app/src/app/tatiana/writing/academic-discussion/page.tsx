@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { tatianaTests } from "@/data/tatianaTests";
+import { createBrowserClient } from "@supabase/ssr";
 
 type Phase = "select" | "practice" | "grading" | "done";
 
@@ -17,6 +18,61 @@ export default function TatianaAcademicDiscussion() {
 
   const selectedTest = tatianaTests.find((t) => t.testNumber === selectedTestNum);
   const academicTask = selectedTest?.writing?.academicDiscussion;
+
+  const [avgScores, setAvgScores] = useState<Record<number, string | null>>({});
+
+  const fetchAvgScores = async () => {
+    try {
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+      const { data, error } = await supabase
+        .from("practice_sessions")
+        .select("score_details, score_value, created_at")
+        .eq("task_type", "academic-discussion")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("fetchAvgScores Supabase Error:", error);
+        return;
+      }
+      if (!data) return;
+
+      const groups: Record<number, number[]> = {};
+      const seenTasks = new Set<string>();
+
+      for (const row of data) {
+        const taskId = row.score_details?.taskId;
+        if (!taskId || !taskId.startsWith("tatiana-academic-") || seenTasks.has(taskId)) continue;
+        seenTasks.add(taskId);
+
+        const match = taskId.match(/tatiana-academic-(\d+)/);
+        if (!match) continue;
+        
+        const testNum = parseInt(match[1], 10);
+        const scoreStr = row.score_value;
+        const scoreNum = parseFloat(scoreStr ? scoreStr.split('/')[0] : "0");
+        const score = isNaN(scoreNum) ? 0 : scoreNum;
+        
+        if (!groups[testNum]) groups[testNum] = [];
+        groups[testNum].push(score);
+      }
+
+      const computed: Record<number, string | null> = {};
+      for (const [testNum, scores] of Object.entries(groups)) {
+        const avg = scores.reduce((a, b) => a + b, 0) / (scores.length || 1);
+        computed[Number(testNum)] = avg.toFixed(1);
+      }
+      setAvgScores(computed);
+    } catch (e) {
+      console.error("fetchAvgScores failed", e);
+    }
+  };
+
+  useEffect(() => {
+    fetchAvgScores();
+  }, []);
 
   useEffect(() => {
     if (timeLeft !== null && timeLeft > 0 && phase === "practice") {
@@ -112,7 +168,22 @@ export default function TatianaAcademicDiscussion() {
                 <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                   <span className="material-symbols-outlined text-primary text-[18px]">forum</span>
                 </div>
-                <span className="text-[13px] font-bold text-primary uppercase tracking-wider">Test {test.testNumber}</span>
+                <div className="flex items-center gap-2">
+                  {avgScores[test.testNumber] != null && (
+                    <span
+                      className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                        parseFloat(avgScores[test.testNumber]!) >= 4
+                          ? "bg-[#0d7a5f]/10 text-[#0d7a5f]"
+                          : parseFloat(avgScores[test.testNumber]!) >= 2.5
+                          ? "bg-[#c2790a]/10 text-[#c2790a]"
+                          : "bg-error/10 text-error"
+                      }`}
+                    >
+                      ★ {avgScores[test.testNumber]}/5
+                    </span>
+                  )}
+                  <span className="text-[13px] font-bold text-primary uppercase tracking-wider">Test {test.testNumber}</span>
+                </div>
               </div>
               <p className="text-[14px] font-semibold text-on-surface leading-snug">{test.title}</p>
             </button>
