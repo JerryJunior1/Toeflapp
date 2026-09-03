@@ -73,6 +73,34 @@ export default function TatianaWriteEmail() {
     fetchAvgScores();
   }, []);
 
+  const handleSubmit = async () => {
+    if (!emailTask) return;
+    setPhase("grading");
+    if (timerRef.current) clearTimeout(timerRef.current);
+
+    try {
+      const res = await fetch("/api/grade", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          taskId: `tatiana-email-${selectedTestNum}`,
+          taskType: "write-email",
+          promptData: emailTask,
+          userResponse: userInput,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to grade response");
+
+      setGradingResult(data.data);
+      setPhase("done");
+    } catch (err: any) {
+      setGradingError(err.message);
+      setPhase("practice");
+    }
+  };
+
   useEffect(() => {
     if (timeLeft !== null && timeLeft > 0 && phase === "practice") {
       timerRef.current = setTimeout(() => {
@@ -101,33 +129,7 @@ export default function TatianaWriteEmail() {
     fetchAvgScores();
   };
 
-  const handleSubmit = async () => {
-    if (!emailTask) return;
-    setPhase("grading");
-    if (timerRef.current) clearTimeout(timerRef.current);
 
-    try {
-      const res = await fetch("/api/grade", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          taskId: `tatiana-email-${selectedTestNum}`,
-          taskType: "write-email",
-          promptData: emailTask,
-          userResponse: userInput,
-        }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to grade response");
-
-      setGradingResult(data.data);
-      setPhase("done");
-    } catch (err: any) {
-      setGradingError(err.message);
-      setPhase("practice");
-    }
-  };
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);

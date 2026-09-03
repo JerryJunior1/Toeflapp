@@ -73,34 +73,6 @@ export default function TatianaAcademicDiscussion() {
     fetchAvgScores();
   }, []);
 
-  useEffect(() => {
-    if (timeLeft !== null && timeLeft > 0 && phase === "practice") {
-      timerRef.current = setTimeout(() => {
-        setTimeLeft((prev) => (prev !== null && prev > 0 ? prev - 1 : 0));
-      }, 1000);
-    } else if (timeLeft === 0 && phase === "practice") {
-      handleSubmit();
-    }
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, [timeLeft, phase]);
-
-  const startPractice = (testNum: number) => {
-    setSelectedTestNum(testNum);
-    setUserInput("");
-    setPhase("practice");
-    setTimeLeft(600); // 10 minutes
-    setGradingResult(null);
-    setGradingError(null);
-  };
-
-  const handleRestart = () => {
-    setSelectedTestNum(null);
-    setPhase("select");
-    fetchAvgScores();
-  };
-
   const handleSubmit = async () => {
     if (!academicTask) return;
     setPhase("grading");
@@ -135,6 +107,36 @@ export default function TatianaAcademicDiscussion() {
       setPhase("practice");
     }
   };
+
+  useEffect(() => {
+    if (timeLeft !== null && timeLeft > 0 && phase === "practice") {
+      timerRef.current = setTimeout(() => {
+        setTimeLeft((prev) => (prev !== null && prev > 0 ? prev - 1 : 0));
+      }, 1000);
+    } else if (timeLeft === 0 && phase === "practice") {
+      handleSubmit();
+    }
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, [timeLeft, phase]);
+
+  const startPractice = (testNum: number) => {
+    setSelectedTestNum(testNum);
+    setUserInput("");
+    setPhase("practice");
+    setTimeLeft(600); // 10 minutes
+    setGradingResult(null);
+    setGradingError(null);
+  };
+
+  const handleRestart = () => {
+    setSelectedTestNum(null);
+    setPhase("select");
+    fetchAvgScores();
+  };
+
+
 
   const formatTime = (seconds: number) => {
     const m = Math.floor(seconds / 60);
