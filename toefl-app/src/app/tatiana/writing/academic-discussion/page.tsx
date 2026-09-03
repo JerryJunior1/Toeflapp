@@ -44,8 +44,7 @@ export default function TatianaAcademicDiscussion() {
 
       for (const row of data) {
         const taskId = row.score_details?.taskId;
-        if (!taskId || !taskId.startsWith("tatiana-academic-") || seenTasks.has(taskId)) continue;
-        seenTasks.add(taskId);
+        if (!taskId || !taskId.startsWith("tatiana-academic-")) continue;
 
         const match = taskId.match(/tatiana-academic-(\d+)/);
         if (!match) continue;
@@ -99,6 +98,7 @@ export default function TatianaAcademicDiscussion() {
   const handleRestart = () => {
     setSelectedTestNum(null);
     setPhase("select");
+    fetchAvgScores();
   };
 
   const handleSubmit = async () => {

@@ -55,8 +55,7 @@ export default function TatianaBuildSentence() {
 
       for (const row of data) {
         const taskId = row.score_details?.taskId;
-        if (!taskId || !taskId.startsWith("tatiana-build-sentence-") || seenTasks.has(taskId)) continue;
-        seenTasks.add(taskId);
+        if (!taskId || !taskId.startsWith("tatiana-build-sentence-")) continue;
 
         const match = taskId.match(/tatiana-build-sentence-(\d+)/);
         if (!match) continue;
@@ -189,6 +188,7 @@ export default function TatianaBuildSentence() {
     setResults([]);
     setPhase("select");
     setSelectedTestNum(null);
+    fetchAvgScores();
   };
 
   const formatTime = (seconds: number) => {

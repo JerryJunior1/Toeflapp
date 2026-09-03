@@ -44,8 +44,7 @@ export default function TatianaWriteEmail() {
 
       for (const row of data) {
         const taskId = row.score_details?.taskId;
-        if (!taskId || !taskId.startsWith("tatiana-email-") || seenTasks.has(taskId)) continue;
-        seenTasks.add(taskId);
+        if (!taskId || !taskId.startsWith("tatiana-email-")) continue;
 
         const match = taskId.match(/tatiana-email-(\d+)/);
         if (!match) continue;
@@ -99,6 +98,7 @@ export default function TatianaWriteEmail() {
   const handleRestart = () => {
     setSelectedTestNum(null);
     setPhase("select");
+    fetchAvgScores();
   };
 
   const handleSubmit = async () => {
