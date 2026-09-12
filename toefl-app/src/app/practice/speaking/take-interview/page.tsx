@@ -50,9 +50,10 @@ export default function TakeInterview() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<BlobPart[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const autoStartRef = useRef(false);
 
   // --- Text-to-Speech ---
-  const speakQuestion = (text: string) => {
+  const speakQuestion = (text: string, autoStartRecord: boolean = false) => {
     if (typeof window === 'undefined' || !window.speechSynthesis) return;
     window.speechSynthesis.cancel(); // cancel any ongoing speech
     const utterance = new SpeechSynthesisUtterance(text);
@@ -66,7 +67,12 @@ export default function TakeInterview() {
       || voices[0];
     if (preferred) utterance.voice = preferred;
     utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
+    utterance.onend = () => {
+      setIsSpeaking(false);
+      if (autoStartRecord && autoStartRef.current) {
+        startRecording();
+      }
+    };
     utterance.onerror = () => setIsSpeaking(false);
     window.speechSynthesis.speak(utterance);
   };
@@ -92,9 +98,13 @@ export default function TakeInterview() {
     if (selectedTask) {
       const q = selectedTask.questions[currentQuestionIndex]?.question;
       if (q) {
+        autoStartRef.current = true;
         // Small delay so the page has fully rendered before speaking
-        const timeout = setTimeout(() => speakQuestion(q), 600);
-        return () => clearTimeout(timeout);
+        const timeout = setTimeout(() => speakQuestion(q, true), 600);
+        return () => {
+          clearTimeout(timeout);
+          autoStartRef.current = false;
+        };
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps

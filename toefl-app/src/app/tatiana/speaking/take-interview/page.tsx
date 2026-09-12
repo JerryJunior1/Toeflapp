@@ -37,6 +37,7 @@ export default function TatianaInterview() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<BlobPart[]>([]);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const autoStartRef = useRef(false);
 
   // ── FETCH AVERAGE SCORES PER TEST ────────────────────────────────────────
   const fetchAvgScores = async () => {
@@ -93,7 +94,7 @@ export default function TatianaInterview() {
   }, []);
 
   // ── TTS ──────────────────────────────────────────────────────────────────
-  const speakQuestion = (text: string) => {
+  const speakQuestion = (text: string, autoStartRecord = false) => {
     if (typeof window === "undefined" || !window.speechSynthesis) return;
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
@@ -107,7 +108,12 @@ export default function TatianaInterview() {
       voices[0];
     if (preferred) utterance.voice = preferred;
     utterance.onstart = () => setIsSpeaking(true);
-    utterance.onend = () => setIsSpeaking(false);
+    utterance.onend = () => {
+      setIsSpeaking(false);
+      if (autoStartRecord && autoStartRef.current) {
+        startRecording();
+      }
+    };
     utterance.onerror = () => setIsSpeaking(false);
     window.speechSynthesis.speak(utterance);
   };
@@ -117,8 +123,12 @@ export default function TatianaInterview() {
     if (selectedTest) {
       const q = selectedTest.interview.questions[currentQuestionIndex]?.question;
       if (q) {
-        const t = setTimeout(() => speakQuestion(q), 600);
-        return () => clearTimeout(t);
+        autoStartRef.current = true;
+        const t = setTimeout(() => speakQuestion(q, true), 600);
+        return () => {
+          clearTimeout(t);
+          autoStartRef.current = false;
+        };
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
