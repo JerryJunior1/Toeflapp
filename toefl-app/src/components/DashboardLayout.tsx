@@ -30,7 +30,7 @@ export default function DashboardLayout({
             <span className="material-symbols-outlined">notifications</span>
             <span className="material-symbols-outlined">account_circle</span>
           </div>
-        </header>
+        </header> 
 
         {/* Desktop Top Nav (inside dashboard) */}
         <header className="hidden md:flex bg-surface w-full h-16 border-b border-outline-variant sticky top-0 z-10 justify-between items-center px-[var(--spacing-margin-desktop)] shrink-0">
